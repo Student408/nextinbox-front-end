@@ -59,7 +59,7 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link href="/dashboard">
                   <Button size="lg" className="bg-[#FF6C37] hover:bg-[#FF6C37]/90 text-white px-8 py-6 text-lg rounded-full">
-                    Get started — it's free
+                    Get started — it&#39;s free
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>

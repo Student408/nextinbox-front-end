@@ -11,11 +11,19 @@ export default function AuthPage() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { user }, error } = await supabase.auth.getUser()
+      const { data: { session }, error } = await supabase.auth.getSession()
       if (error) {
-        console.error('Error fetching user:', error.message)
+        console.error('Error fetching session:', error.message)
         setLoading(false)
         return
+      }
+
+      let user = null;
+      if (session) {
+        const { data } = await supabase.auth.getUser()
+        user = data.user;
+      } else {
+        setLoading(false)
       }
 
       if (user) {

@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Github, Mail } from 'lucide-react';
+import Link from 'next/link';
 
 export function AuthForm() {
   const [loading, setLoading] = useState(false);
@@ -68,8 +69,11 @@ export function AuthForm() {
             </a>{' '}
             and{' '}
             <a href="#" className="text-[#FF6C37] hover:underline font-medium">
-              Privacy Policy
-            </a>.
+              Privacy Policy.</a>
+              <br /><br />
+              <Link href="/" className="text-[#FF6C37] hover:underline font-medium">
+              Home
+            </Link>
           </p>
         </CardFooter>
       </Card>
