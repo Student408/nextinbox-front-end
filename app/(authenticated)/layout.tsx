@@ -37,19 +37,30 @@ export default function AuthenticatedLayout({
   const router = useRouter();
   const { isCollapsed, toggleSidebar } = useSidebar();
 
+  // useEffect(() => {
+  //   const checkUser = async () => {
+  //     const {
+  //       data: { user },
+  //     } = await supabase.auth.getUser();
+  //     if (user) {
+  //       setUser(user.email ? { email: user.email } : null);
+  //     } else {
+  //       router.push("/auth");
+  //     }
+  //   };
+  //   checkUser();
+  // }, [router]);
+
   useEffect(() => {
-    const checkUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user) {
-        setUser(user.email ? { email: user.email } : null);
-      } else {
-        router.push("/auth");
-      }
+    const mockLogin = async () => {
+      // Temporarily mock user credentials
+      const mockUser = { email: "lokotwiststudio2@gmail.com" }; // Replace with your test email
+      setUser(mockUser);
     };
-    checkUser();
-  }, [router]);
+  
+    mockLogin();
+  }, []);
+  
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
