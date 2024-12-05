@@ -10,6 +10,9 @@ import {
   LayoutGrid,
   FileText,
   Settings,
+  FileTerminal,
+  ContactRound,
+  FileClock,
   LogOut,
   PlugZap,
   Bell,
@@ -118,13 +121,28 @@ export default function AuthenticatedLayout({
                 },
                 {
                   href: "/templates",
-                  icon: <FileText className="w-5 h-5" />,
+                  icon: <FileTerminal className="w-5 h-5" />,
                   label: "Templates",
+                },
+                {
+                  href: "/contacts",
+                  icon: <ContactRound className="w-5 h-5" />,
+                  label: "Contacts",
+                },
+                {
+                  href: "/logs",
+                  icon: <FileClock className="w-5 h-5" />,
+                  label: "Logs",
                 },
                 {
                   href: "/settings",
                   icon: <Settings className="w-5 h-5" />,
                   label: "Settings",
+                },
+                {
+                  href: "/docs",
+                  icon: <FileText className="w-5 h-5" />,
+                  label: "Docs",
                 },
               ].map((item) => (
                 <li key={item.href}>

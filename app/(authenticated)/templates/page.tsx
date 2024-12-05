@@ -11,7 +11,7 @@ import { toast } from '@/components/ui/use-toast'
 import CodeMirror from '@uiw/react-codemirror'
 import { html } from '@codemirror/lang-html'
 import { vscodeDark } from '@uiw/codemirror-theme-vscode'
-import { FileText, Trash2, PlusCircle, Plus, Edit2, Copy, CheckCircle, Code2 } from 'lucide-react'
+import { FileTerminal, Trash2, PlusCircle, Plus, Edit2, Copy, CheckCircle, Code2 } from 'lucide-react'
 
 interface Template {
   template_id: string
@@ -161,7 +161,7 @@ export default function TemplatesPage() {
     <div className="container mx-auto px-6 py-4 dark:bg-[#212121] dark:text-gray-100">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold flex items-center text-[#FF6C37]">
-          <FileText className="mr-2" /> Email Templates
+          <FileTerminal className="mr-2" /> Email Templates
         </h2>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
