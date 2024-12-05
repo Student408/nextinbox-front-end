@@ -11,7 +11,7 @@ import {
   FileText,
   Settings,
   LogOut,
-  PanelLeft,
+  PlugZap,
   Bell,
   Search,
 } from "lucide-react";
@@ -113,7 +113,7 @@ export default function AuthenticatedLayout({
                 },
                 {
                   href: "/services",
-                  icon: <PanelLeft className="w-5 h-5" />,
+                  icon: <PlugZap className="w-5 h-5" />,
                   label: "Services",
                 },
                 {
