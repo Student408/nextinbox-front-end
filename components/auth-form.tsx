@@ -36,7 +36,7 @@ export function AuthForm() {
               <path d="M24 36c6.627 0 12-5.373 12-12S30.627 12 24 12 12 17.373 12 24s5.373 12 12 12z" fill="#FF6C37" />
             </svg>
           </div>
-          <CardTitle className="text-3xl font-bold mb-2">Welcome to NextInBox</CardTitle>
+          <CardTitle className="text-3xl font-bold mb-2">Welcome to NextBox</CardTitle>
           <CardDescription className="text-white/90 text-lg">Sign in to continue</CardDescription>
         </CardHeader>
         <CardContent className="p-8">

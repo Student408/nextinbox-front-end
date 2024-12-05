@@ -5,7 +5,7 @@ import { Toaster } from '@/components/toaster'
 export const runtime = 'edge'
 
 export const metadata = {
-  title: 'NextInBox',
+  title: 'NextBox',
   description: 'Manage your email services and templates',
 }
 
