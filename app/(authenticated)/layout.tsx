@@ -16,6 +16,7 @@ import {
   Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 // Custom hook for sidebar state
 const useSidebar = () => {
@@ -37,30 +38,29 @@ export default function AuthenticatedLayout({
   const router = useRouter();
   const { isCollapsed, toggleSidebar } = useSidebar();
 
-  // useEffect(() => {
-  //   const checkUser = async () => {
-  //     const {
-  //       data: { user },
-  //     } = await supabase.auth.getUser();
-  //     if (user) {
-  //       setUser(user.email ? { email: user.email } : null);
-  //     } else {
-  //       router.push("/auth");
-  //     }
-  //   };
-  //   checkUser();
-  // }, [router]);
-
   useEffect(() => {
-    const mockLogin = async () => {
-      // Temporarily mock user credentials
-      const mockUser = { email: "lokotwiststudio2@gmail.com" }; // Replace with your test email
-      setUser(mockUser);
+    const checkUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user.email ? { email: user.email } : null);
+      } else {
+        router.push("/auth");
+      }
     };
+    checkUser();
+  }, [router]);
+
+  // useEffect(() => {
+  //   const mockLogin = async () => {
+  //     // Temporarily mock user credentials
+  //     const mockUser = { email: "lokotwiststudio2@gmail.com" }; // Replace with your test email
+  //     setUser(mockUser);
+  //   };
   
-    mockLogin();
-  }, []);
-  
+  //   mockLogin();
+  // }, []);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -69,18 +69,18 @@ export default function AuthenticatedLayout({
 
   if (!user) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-50">
+      <div className="flex items-center justify-center h-screen bg-background">
         Loading...
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-background">
       {/* Sidebar */}
       <div
         className={cn(
-          "bg-white border-r transition-all duration-300 ease-in-out overflow-hidden shadow-md",
+          "bg-card border-r transition-all duration-300 ease-in-out overflow-hidden shadow-md",
           isCollapsed ? "w-16" : "w-64"
         )}
       >
@@ -92,7 +92,7 @@ export default function AuthenticatedLayout({
             )}
             <button
               onClick={toggleSidebar}
-              className="hover:bg-gray-100 p-2 rounded-md transition text-gray-600 hover:text-[#FF6C37]"
+              className="hover:bg-accent p-2 rounded-md transition text-muted-foreground hover:text-[#FF6C37]"
             >
               {isCollapsed ? (
                 <ChevronRight className="w-5 h-5" />
@@ -131,21 +131,21 @@ export default function AuthenticatedLayout({
                   <Link
                     href={item.href}
                     className={cn(
-                      "flex items-center group px-4 py-2 hover:bg-gray-100 transition",
+                      "flex items-center group px-4 py-2 hover:bg-accent transition",
                       "hover:text-[#FF6C37]",
                       isCollapsed ? "justify-center" : ""
                     )}
                   >
                     <span
                       className={cn(
-                        "group-hover:text-[#FF6C37] text-gray-600",
+                        "group-hover:text-[#FF6C37] text-muted-foreground",
                         isCollapsed ? "" : "mr-3"
                       )}
                     >
                       {item.icon}
                     </span>
                     {!isCollapsed && (
-                      <span className="text-gray-700 group-hover:text-[#FF6C37]">
+                      <span className="text-foreground group-hover:text-[#FF6C37]">
                         {item.label}
                       </span>
                     )}
@@ -160,8 +160,8 @@ export default function AuthenticatedLayout({
             <button
               onClick={handleSignOut}
               className={cn(
-                "flex items-center w-full hover:bg-gray-100 rounded-md p-2 transition",
-                "hover:text-[#FF6C37] text-gray-600",
+                "flex items-center w-full hover:bg-accent rounded-md p-2 transition",
+                "hover:text-[#FF6C37] text-muted-foreground",
                 isCollapsed ? "justify-center" : ""
               )}
             >
@@ -175,30 +175,31 @@ export default function AuthenticatedLayout({
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-b px-4 py-2 flex items-center justify-between shadow-sm h-16">
+        <header className="bg-card border-b px-4 py-2 flex items-center justify-between shadow-sm h-16">
           <div className="flex items-center w-full">
             {/* Search Bar */}
             <div className="relative flex-grow max-w-xl mr-4">
               <input
                 type="text"
                 placeholder="Search..."
-                className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF6C37]/50"
+                className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF6C37]/50 bg-background"
               />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
             </div>
 
             {/* User and Notifications */}
             <div className="flex items-center ml-auto space-x-4">
+              <ThemeToggle />
               <button
                 title="Notifications"
-                className="text-gray-600 hover:text-[#FF6C37] transition"
+                className="text-muted-foreground hover:text-[#FF6C37] transition"
               >
                 <Bell className="w-5 h-5" />
               </button>
 
               <div className="flex items-center">
-                <span className="text-sm text-gray-600 mr-2">Welcome,</span>
-                <span className="font-semibold text-gray-800 truncate max-w-xs">
+                <span className="text-sm text-muted-foreground mr-2">Welcome,</span>
+                <span className="font-semibold text-foreground truncate max-w-xs">
                   {user.email}
                 </span>
               </div>
@@ -207,7 +208,7 @@ export default function AuthenticatedLayout({
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-auto p-4 bg-gray-50">{children}</main>
+        <main className="flex-1 overflow-auto p-4 bg-background">{children}</main>
       </div>
     </div>
   );
