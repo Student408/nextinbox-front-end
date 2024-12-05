@@ -8,7 +8,7 @@ export default function Home() {
       {/* Announcement Banner */}
       <div className="bg-[#FF6C37] py-2 text-center text-white">
         <p className="text-sm font-medium">
-          NextBox V2 Launch – Register Today 👉
+          NextInBox V2 Launch – Register Today 👉
         </p>
       </div>
 
@@ -19,7 +19,7 @@ export default function Home() {
             <path d="M37.793 10.793c-3.906-3.906-10.236-3.906-14.142 0l-13.06 13.06c-3.905 3.906-3.905 10.236 0 14.142 3.906 3.905 10.236 3.905 14.142 0l13.06-13.06c3.905-3.906 3.905-10.236 0-14.142z" fill="#FF6C37" />
             <path d="M24 36c6.627 0 12-5.373 12-12S30.627 12 24 12 12 17.373 12 24s5.373 12 12 12z" fill="#FF6C37" />
           </svg>
-          <h1 className="text-2xl font-bold text-white">NextBox</h1>
+          <h1 className="text-2xl font-bold text-white">NextInBox</h1>
         </div>
         <nav className="hidden md:flex items-center space-x-8">
           <Link href="/templates" className="text-gray-300 hover:text-white transition-colors">
@@ -90,7 +90,7 @@ export default function Home() {
           {/* <div className="rounded-lg border border-white/10 overflow-hidden shadow-2xl">
             <img 
               src="/placeholder.svg?height=600&width=1200" 
-              alt="NextBox Dashboard Preview" 
+              alt="NextInBox Dashboard Preview" 
               className="w-full h-auto"
             />
           </div> */}
@@ -100,7 +100,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="container mx-auto px-4 py-8 mt-20 border-t border-white/10">
         <div className="flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400">&copy; 2023 NextBox. All rights reserved.</p>
+          <p className="text-gray-400">&copy; 2023 NextInBox. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
               Privacy

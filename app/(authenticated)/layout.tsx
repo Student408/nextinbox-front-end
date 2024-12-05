@@ -91,7 +91,7 @@ export default function AuthenticatedLayout({
           {/* Sidebar Header */}
           <div className="flex items-center justify-between px-4 py-2 border-b shadow-sm h-16">
             {!isCollapsed && (
-              <h2 className="text-xl font-bold text-[#FF6C37]">NextBox</h2>
+              <h2 className="text-xl font-bold text-[#FF6C37]">NextInBox</h2>
             )}
             <button
               onClick={toggleSidebar}
