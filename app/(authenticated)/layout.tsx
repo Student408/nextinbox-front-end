@@ -37,7 +37,7 @@ export default function AuthenticatedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [user, setUser] = useState<{ email: string } | null>(null);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const router = useRouter();
   const { isCollapsed, toggleSidebar } = useSidebar();
 
@@ -47,23 +47,13 @@ export default function AuthenticatedLayout({
         data: { user },
       } = await supabase.auth.getUser();
       if (user) {
-        setUser(user.email ? { email: user.email } : null);
+        setUser(user.email ? { name: user.user_metadata.full_name, email: user.email } : null);
       } else {
         router.push("/auth");
       }
     };
     checkUser();
   }, [router]);
-
-  // useEffect(() => {
-  //   const mockLogin = async () => {
-  //     // Temporarily mock user credentials
-  //     const mockUser = { email: "lokotwiststudio2@gmail.com" }; // Replace with your test email
-  //     setUser(mockUser);
-  //   };
-  
-  //   mockLogin();
-  // }, []);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -218,7 +208,7 @@ export default function AuthenticatedLayout({
               <div className="flex items-center">
                 <span className="text-sm text-muted-foreground mr-2">Welcome,</span>
                 <span className="font-semibold text-foreground truncate max-w-xs">
-                  {user.email}
+                  {user.name}
                 </span>
               </div>
             </div>
