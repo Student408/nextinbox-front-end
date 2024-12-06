@@ -5,6 +5,17 @@ import { Label } from '@/components/ui/label'
 import { toast } from '@/components/ui/use-toast'
 import { Key, Copy, RefreshCw, Check } from 'lucide-react'
 import { regenerateUserKey } from '@/lib/utils/profile'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 interface ApiKeySettingsProps {
   profile: {
@@ -114,14 +125,34 @@ export function ApiKeySettings({ profile, onUpdate }: ApiKeySettingsProps) {
           </p>
         </div>
 
-        <Button
-          onClick={handleGenerateKey}
-          disabled={loading}
-          className="bg-[#FF6C37] hover:bg-[#FF6C37]/90"
-        >
-          <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-          {loading ? 'Generating...' : profile?.user_key ? 'Regenerate Key' : 'Generate Key'}
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              disabled={loading}
+              className="bg-[#FF6C37] hover:bg-[#FF6C37]/90"
+            >
+              <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              {loading ? 'Generating...' : profile?.user_key ? 'Regenerate Key' : 'Generate Key'}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Regenerate API Key?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action will invalidate your existing API key. Any applications or scripts using the current key will stop working until updated with the new key.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleGenerateKey}
+                className="bg-[#FF6C37] hover:bg-[#FF6C37]/90"
+              >
+                Regenerate Key
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   )
