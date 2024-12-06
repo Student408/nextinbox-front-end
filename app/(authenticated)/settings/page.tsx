@@ -2,86 +2,86 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-
-interface UserProfile {
-  id: string
-  email: string
-  full_name: string | null
-}
+import { ProfileSettings } from '@/components/settings/profile-settings'
+import { ApiKeySettings } from '@/components/settings/api-key-settings'
+import { DangerZone } from '@/components/settings/danger-zone'
+import { Card } from '@/components/ui/card'
+import { Settings } from 'lucide-react'
 
 export default function SettingsPage() {
-  const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [fullName, setFullName] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [profile, setProfile] = useState<{
+    user_id: string
+    user_key: string | null
+    email: string | null
+  } | null>(null)
 
   useEffect(() => {
     fetchProfile()
   }, [])
 
   async function fetchProfile() {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (user) {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single()
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
       
-      if (error) console.error('Error fetching profile:', error)
-      else {
-        setProfile(data)
-        setFullName(data.full_name || '')
+      if (user) {
+        const { data: profileData, error: profileError } = await supabase
+          .from('profile')
+          .select('*')
+          .eq('user_id', user.id)
+          .single()
+
+        if (profileError && profileError.code !== 'PGRST116') {
+          console.error('Error fetching profile:', profileError)
+          return
+        }
+
+        setProfile({
+          user_id: user.id,
+          user_key: profileData?.user_key || null,
+          email: user.email ?? null
+        })
       }
+    } catch (error) {
+      console.error('Error:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
-  async function updateProfile() {
-    if (!profile) return
-
-    const { error } = await supabase
-      .from('profiles')
-      .update({ full_name: fullName })
-      .eq('id', profile.id)
-
-    if (error) console.error('Error updating profile:', error)
-    else {
-      alert('Profile updated successfully!')
-      fetchProfile()
-    }
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="animate-pulse">
+          <div className="h-8 w-48 bg-gray-200 rounded mb-6"></div>
+          <div className="space-y-6">
+            <div className="h-40 bg-gray-200 rounded"></div>
+            <div className="h-40 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+    )
   }
-
-  if (!profile) return <div>Loading...</div>
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">User Settings</h2>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Profile Information</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" value={profile.email} disabled />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="fullName">Full Name</Label>
-              <Input
-                id="fullName"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
-            </div>
-            <Button onClick={updateProfile} className="w-full sm:w-auto">Update Profile</Button>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="container mx-auto px-4 py-8">
+      <h2 className="text-2xl font-bold flex items-center text-[#FF6C37] mb-6">
+        <Settings className="mr-2" /> Settings
+      </h2>
+
+      <div className="space-y-6">
+        <Card className="p-6">
+          <ProfileSettings profile={profile} onUpdate={fetchProfile} />
+        </Card>
+
+        <Card className="p-6">
+          <ApiKeySettings profile={profile} onUpdate={fetchProfile} />
+        </Card>
+
+        <Card className="p-6">
+          <DangerZone profile={profile} />
+        </Card>
+      </div>
     </div>
   )
 }
-
