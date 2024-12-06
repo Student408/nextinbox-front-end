@@ -1,26 +1,46 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Github, Mail } from 'lucide-react';
 import Link from 'next/link';
+import { toast } from '@/components/ui/use-toast';
 
 export function AuthForm() {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleOAuthSignIn = async (provider: 'github' | 'google') => {
-    setLoading(true);
-
     try {
-      const { error } = await supabase.auth.signInWithOAuth({ provider });
+      setLoading(true);
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
       if (error) {
-        alert(error.message);
+        toast({
+          title: "Authentication Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+
+      if (data) {
+        router.refresh();
       }
     } catch (error) {
       console.error(`Error during ${provider} OAuth sign-in:`, error);
-      alert('An unexpected error occurred. Please try again later.');
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again later.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -28,7 +48,7 @@ export function AuthForm() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-8 relative">
-      <Card className="w-full max-w-md shadow-lg border border-gray-200 rounded-2xl overflow-hidden bg-white">
+      <Card className="w-full max-w-md shadow-lg border border-gray-200 rounded-2xl overflow-hidden bg-card">
         <CardHeader className="text-center bg-[#FF6C37] text-white py-10 px-6">
           <div className="flex justify-center mb-6">
             <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -61,17 +81,18 @@ export function AuthForm() {
             </Button>
           </div>
         </CardContent>
-        <CardFooter className="bg-gray-50 py-6 px-8 text-center">
-          <p className="text-sm text-gray-600">
+        <CardFooter className="bg-muted py-6 px-8 text-center">
+          <p className="text-sm text-muted-foreground">
             By signing in, you agree to our{' '}
-            <a href="#" className="text-[#FF6C37] hover:underline font-medium">
+            <Link href="/terms" className="text-[#FF6C37] hover:underline font-medium">
               Terms of Service
-            </a>{' '}
+            </Link>{' '}
             and{' '}
-            <a href="#" className="text-[#FF6C37] hover:underline font-medium">
-              Privacy Policy.</a>
-              <br /><br />
-              <Link href="/" className="text-[#FF6C37] hover:underline font-medium">
+            <Link href="/privacy" className="text-[#FF6C37] hover:underline font-medium">
+              Privacy Policy
+            </Link>
+            <br /><br />
+            <Link href="/" className="text-[#FF6C37] hover:underline font-medium">
               Home
             </Link>
           </p>
@@ -80,4 +101,3 @@ export function AuthForm() {
     </div>
   );
 }
-
