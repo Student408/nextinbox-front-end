@@ -1,13 +1,10 @@
-'use client'
-
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from '@/components/ui/use-toast'
 import { Key, Copy, RefreshCw, Check } from 'lucide-react'
-import { generateApiKey } from '@/lib/utils/api-key'
+import { regenerateUserKey } from '@/lib/utils/profile'
 
 interface ApiKeySettingsProps {
   profile: {
@@ -23,16 +20,11 @@ export function ApiKeySettings({ profile, onUpdate }: ApiKeySettingsProps) {
   const [isCopied, setIsCopied] = useState(false)
 
   async function handleGenerateKey() {
+    if (!profile?.user_id) return
+
     try {
       setLoading(true)
-      const newKey = generateApiKey()
-
-      const { error } = await supabase
-        .from('profile')
-        .upsert({
-          user_id: profile?.user_id,
-          user_key: newKey
-        })
+      const { error } = await regenerateUserKey(profile.user_id)
 
       if (error) throw error
 
