@@ -1,8 +1,5 @@
-'use client'
-
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -14,6 +11,7 @@ import {
 } from '@/components/ui/dialog'
 import { toast } from '@/components/ui/use-toast'
 import { AlertTriangle } from 'lucide-react'
+import { deleteUserAccount } from '@/lib/utils/auth'
 
 interface DangerZoneProps {
   profile: {
@@ -27,36 +25,32 @@ export function DangerZone({ profile }: DangerZoneProps) {
   const router = useRouter()
 
   async function handleDeleteAccount() {
+    if (!profile?.user_id) {
+      toast({
+        title: 'Error',
+        description: 'User profile not found',
+        variant: 'destructive',
+      })
+      return
+    }
+
     try {
       setLoading(true)
+      const { error } = await deleteUserAccount(profile.user_id)
 
-      // Delete the user's profile (this will cascade to delete related data)
-      const { error: profileError } = await supabase
-        .from('profile')
-        .delete()
-        .eq('user_id', profile?.user_id)
-
-      if (profileError) throw profileError
-
-      // Delete the user's auth account
-      const { error: authError } = await supabase.auth.admin.deleteUser(
-        profile?.user_id || ''
-      )
-
-      if (authError) throw authError
-
-      await supabase.auth.signOut()
-      router.push('/')
+      if (error) throw error
 
       toast({
         title: 'Account Deleted',
         description: 'Your account has been successfully deleted',
       })
+
+      router.push('/')
     } catch (error) {
       console.error('Error deleting account:', error)
       toast({
         title: 'Error',
-        description: 'Failed to delete account',
+        description: 'Failed to delete account. Please try again.',
         variant: 'destructive',
       })
     } finally {

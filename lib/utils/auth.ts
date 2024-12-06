@@ -1,8 +1,38 @@
 import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase-admin'
 
 export async function deleteUserAccount(userId: string): Promise<{ error: Error | null }> {
   try {
-    // Delete the profile first (this will cascade delete related data)
+    // Start a transaction by deleting related data first
+    // Profile deletion is handled by CASCADE
+    const { error: servicesError } = await supabase
+      .from('services')
+      .delete()
+      .eq('user_id', userId)
+
+    if (servicesError) throw servicesError
+
+    const { error: templatesError } = await supabase
+      .from('templates')
+      .delete()
+      .eq('user_id', userId)
+
+    if (templatesError) throw templatesError
+
+    const { error: logsError } = await supabase
+      .from('logs')
+      .delete()
+      .eq('user_id', userId)
+
+    if (logsError) throw logsError
+
+    const { error: emailsError } = await supabase
+      .from('emails')
+      .delete()
+      .eq('user_id', userId)
+
+    if (emailsError) throw emailsError
+
     const { error: profileError } = await supabase
       .from('profile')
       .delete()
@@ -10,9 +40,12 @@ export async function deleteUserAccount(userId: string): Promise<{ error: Error 
 
     if (profileError) throw profileError
 
-    // Delete the user's auth account
-    const { error: authError } = await supabase.auth.admin.deleteUser(userId)
-    if (authError) throw authError
+    // Delete the user from auth.users using admin client
+    const { error: deleteUserError } = await supabaseAdmin.auth.admin.deleteUser(
+      userId
+    )
+
+    if (deleteUserError) throw deleteUserError
 
     // Sign out the user
     const { error: signOutError } = await supabase.auth.signOut()
@@ -20,8 +53,9 @@ export async function deleteUserAccount(userId: string): Promise<{ error: Error 
 
     return { error: null }
   } catch (error) {
-    return { 
-      error: error instanceof Error ? error : new Error('An unknown error occurred') 
+    console.error('Error deleting user account:', error)
+    return {
+      error: error instanceof Error ? error : new Error('An unknown error occurred')
     }
   }
 }
