@@ -44,17 +44,17 @@ body {
   }
 
   .dark {
-    --background: 200 9% 7%;
+    --background: 0, 0%, 4%;
     /* #0e1113 */
     --foreground: 0 0% 98%;
-    --card: 200 9% 7%;
+    --card: 0, 0%, 4%;
     /* #0e1113 */
     --card-foreground: 0 0% 98%;
-    --popover: 200 9% 7%;
+    --popover: 0, 0%, 4%;
     /* #0e1113 */
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;
-    --primary-foreground: 200 9% 7%;
+    --primary-foreground: 0, 0%, 4%;
     /* #0e1113 */
     --secondary: 200 9% 10%;
     --secondary-foreground: 0 0% 98%;
@@ -72,7 +72,7 @@ body {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --sidebar-background: 200 9% 7%;
+    --sidebar-background: 0, 0%, 4%;
     /* #0e1113 */
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 224.3 76.3% 48%;
