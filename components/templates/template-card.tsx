@@ -2,33 +2,44 @@ import { useState } from "react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { Edit2, Trash2, Copy, CheckCircle, Server } from "lucide-react";
-import { Service } from "@/types/services";
+import { Edit2, Trash2, Copy, CheckCircle, Code2 } from "lucide-react";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 
-interface ServiceCardProps {
-  service: Service;
+interface Template {
+  template_id: string;
+  name: string;
+  content: string;
+  to_email: string | null;
+  from_name: string;
+  reply_to: string | null;
+  subject: string;
+  bcc: string | null;
+  cc: string | null;
+}
+
+interface TemplateCardProps {
+  template: Template;
   onEdit: () => void;
   onDelete: () => void;
 }
 
-export function ServiceCard({ service, onEdit, onDelete }: ServiceCardProps) {
-  const [copiedServiceId, setCopiedServiceId] = useState<string | null>(null);
+export function TemplateCard({ template, onEdit, onDelete }: TemplateCardProps) {
+  const [copiedTemplateId, setCopiedTemplateId] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  function copyServiceId(id: string) {
+  function copyTemplateId(id: string) {
     navigator.clipboard.writeText(id);
-    setCopiedServiceId(id);
-    setTimeout(() => setCopiedServiceId(null), 2000);
+    setCopiedTemplateId(id);
+    setTimeout(() => setCopiedTemplateId(null), 2000);
     toast({
       title: "Copied",
-      description: "Service ID copied to clipboard",
+      description: "Template ID copied to clipboard",
     });
   }
 
-  function getPartialServiceId(serviceId: string): string {
-    const length = Math.floor(serviceId.length * 0.3);
-    return serviceId.substring(0, length) + "...";
+  function getPartialTemplateId(templateId: string): string {
+    const length = Math.floor(templateId.length * 0.3);
+    return templateId.substring(0, length) + "...";
   }
 
   function handleDelete() {
@@ -41,24 +52,24 @@ export function ServiceCard({ service, onEdit, onDelete }: ServiceCardProps) {
         <CardHeader className="p-4 pb-0">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
-              <Server className="text-[#FF6C37] w-6 h-6" />
+              <Code2 className="text-[#FF6C37] w-6 h-6" />
               <div className="flex flex-col">
                 <h3 className="text-lg font-semibold text-gray-800 truncate max-w-[200px] dark:text-gray-100">
-                  {service.host_address}
+                  {template.name}
                 </h3>
                 <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">
-                  ID: {getPartialServiceId(service.service_id)}
+                  ID: {getPartialTemplateId(template.template_id)}
                 </span>
               </div>
             </div>
             <div className="flex items-center space-x-1">
               <Button
-                onClick={() => copyServiceId(service.service_id)}
+                onClick={() => copyTemplateId(template.template_id)}
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 text-gray-500 hover:text-[#FF6C37] hover:bg-[#FF6C37]/10 dark:text-gray-400 dark:hover:text-[#FF6C37]"
               >
-                {copiedServiceId === service.service_id ? (
+                {copiedTemplateId === template.template_id ? (
                   <CheckCircle className="h-4 w-4 text-green-500" />
                 ) : (
                   <Copy className="h-4 w-4" />
@@ -84,25 +95,10 @@ export function ServiceCard({ service, onEdit, onDelete }: ServiceCardProps) {
           </div>
         </CardHeader>
         <CardContent className="p-4 pt-2">
-          <div className="space-y-1 text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-gray-500 dark:text-gray-400">Port</span>
-              <span className="font-medium">{service.port}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-gray-500 dark:text-gray-400">Email</span>
-              <span className="font-medium truncate max-w-[200px]">
-                {service.email_id}
-              </span>
-            </div>
-            {service.cors_origin && (
-              <div className="flex items-center justify-between">
-                <span className="text-gray-500 dark:text-gray-400">CORS Origin</span>
-                <span className="font-medium truncate max-w-[200px]">
-                  {service.cors_origin}
-                </span>
-              </div>
-            )}
+          <div className="relative">
+            <pre className="text-sm text-gray-600 bg-gray-100 p-3 rounded-md max-h-[150px] overflow-hidden dark:bg-background dark:text-gray-300">
+              {template.content.substring(0, 200)}...
+            </pre>
           </div>
         </CardContent>
       </Card>
@@ -111,8 +107,8 @@ export function ServiceCard({ service, onEdit, onDelete }: ServiceCardProps) {
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
         onConfirm={onDelete}
-        title="Delete Service"
-        description={`Are you sure you want to delete the service "${service.host_address}"? This action cannot be undone.`}
+        title="Delete Template"
+        description={`Are you sure you want to delete "${template.name}"? This action cannot be undone.`}
       />
     </>
   );
