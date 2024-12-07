@@ -35,6 +35,12 @@ interface Service {
   cors_origin: string | null;
 }
 
+// Add this helper function before the ServicesPage component
+function getPartialServiceId(serviceId: string): string {
+  const length = Math.floor(serviceId.length * 0.3);
+  return serviceId.substring(0, length) + '...';
+}
+
 export default function ServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -254,11 +260,16 @@ export default function ServicesPage() {
             className="border border-gray-200 shadow-sm hover:shadow-md transition-all group"
           >
             <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between border-b border-gray-100">
-              <div className="flex items-center space-x-2">
-                <Server className="h-4 w-4 text-[#FF6C37]" />
-                <CardTitle className="text-sm font-semibold truncate max-w-[200px]">
-                  {service.host_address}
-                </CardTitle>
+              <div className="flex flex-col space-y-1">
+                <div className="flex items-center space-x-2">
+                  <Server className="h-4 w-4 text-[#FF6C37]" />
+                  <CardTitle className="text-sm font-semibold truncate max-w-[200px]">
+                    {service.host_address}
+                  </CardTitle>
+                </div>
+                <span className="text-xs text-gray-500">
+                  ID: {getPartialServiceId(service.service_id)}
+                </span>
               </div>
               <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <Button
