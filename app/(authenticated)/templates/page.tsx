@@ -158,7 +158,7 @@ export default function TemplatesPage() {
   }
 
   return (
-    <div className="container mx-auto px-6 py-4 dark:bg-[#212121] dark:text-gray-100">
+    <div className="container mx-auto px-6 py-4 dark:bg-background dark:text-gray-100">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold flex items-center text-[#FF6C37]">
           <FileTerminal className="mr-2" /> Email Templates
@@ -189,7 +189,7 @@ export default function TemplatesPage() {
                       onChange={(e) => currentTemplate 
                         ? setCurrentTemplate({ ...currentTemplate, name: e.target.value })
                         : setNewTemplate({ ...newTemplate, name: e.target.value })}
-                      className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-[#212121] dark:border-[#FF6C37]/50 dark:text-gray-100"
+                      className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
                     />
                   </div>
                   <div>
@@ -201,7 +201,7 @@ export default function TemplatesPage() {
                       onChange={(e) => currentTemplate 
                         ? setCurrentTemplate({ ...currentTemplate, subject: e.target.value })
                         : setNewTemplate({ ...newTemplate, subject: e.target.value })}
-                      className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-[#212121] dark:border-[#FF6C37]/50 dark:text-gray-100"
+                      className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
                     />
                   </div>
                   <div>
@@ -213,7 +213,7 @@ export default function TemplatesPage() {
                       onChange={(e) => currentTemplate 
                         ? setCurrentTemplate({ ...currentTemplate, from_name: e.target.value })
                         : setNewTemplate({ ...newTemplate, from_name: e.target.value })}
-                      className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-[#212121] dark:border-[#FF6C37]/50 dark:text-gray-100"
+                      className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
                     />
                   </div>
                   <div>
@@ -225,7 +225,7 @@ export default function TemplatesPage() {
                       onChange={(e) => currentTemplate 
                         ? setCurrentTemplate({ ...currentTemplate, to_email: e.target.value })
                         : setNewTemplate({ ...newTemplate, to_email: e.target.value })}
-                      className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-[#212121] dark:border-[#FF6C37]/50 dark:text-gray-100"
+                      className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
                     />
                   </div>
                   <div>
@@ -237,7 +237,7 @@ export default function TemplatesPage() {
                       onChange={(e) => currentTemplate 
                         ? setCurrentTemplate({ ...currentTemplate, reply_to: e.target.value })
                         : setNewTemplate({ ...newTemplate, reply_to: e.target.value })}
-                      className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-[#212121] dark:border-[#FF6C37]/50 dark:text-gray-100"
+                      className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
                     />
                   </div>
                   <div>
@@ -249,7 +249,7 @@ export default function TemplatesPage() {
                       onChange={(e) => currentTemplate 
                         ? setCurrentTemplate({ ...currentTemplate, cc: e.target.value })
                         : setNewTemplate({ ...newTemplate, cc: e.target.value })}
-                      className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-[#212121] dark:border-[#FF6C37]/50 dark:text-gray-100"
+                      className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
                     />
                   </div>
                   <div>
@@ -261,7 +261,7 @@ export default function TemplatesPage() {
                       onChange={(e) => currentTemplate 
                         ? setCurrentTemplate({ ...currentTemplate, bcc: e.target.value })
                         : setNewTemplate({ ...newTemplate, bcc: e.target.value })}
-                      className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-[#212121] dark:border-[#FF6C37]/50 dark:text-gray-100"
+                      className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
                     />
                   </div>
                   <DialogFooter className="mt-4">
@@ -356,7 +356,7 @@ export default function TemplatesPage() {
             </CardHeader>
             <CardContent className="p-4 pt-2">
               <div className="relative">
-                <pre className="text-sm text-gray-600 bg-gray-100 p-3 rounded-md max-h-[150px] overflow-hidden dark:bg-[#212121] dark:text-gray-300">
+                <pre className="text-sm text-gray-600 bg-gray-100 p-3 rounded-md max-h-[150px] overflow-hidden dark:bg-background dark:text-gray-300">
                   {template.content.substring(0, 200)}...
                 </pre>
               </div>
@@ -366,7 +366,7 @@ export default function TemplatesPage() {
       </div>
 
       {templates.length === 0 && (
-        <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-[#FF6C37]/30 dark:bg-[#212121] dark:border-[#FF6C37]/50">
+        <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-[#FF6C37]/30 dark:bg-background dark:border-[#FF6C37]/50">
           <p className="text-gray-600 dark:text-gray-400 text-lg mb-4">No templates found. Create your first template.</p>
           <Button 
             onClick={() => setIsDialogOpen(true)}

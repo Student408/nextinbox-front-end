@@ -441,7 +441,7 @@ export default function ServicesPage() {
       </Dialog>
 
       {services.length === 0 && (
-        <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-[#FF6C37]/30 dark:bg-[#212121] dark:border-[#FF6C37]/50">
+        <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-[#FF6C37]/30 dark:bg-background dark:border-[#FF6C37]/50">
           <p className="text-gray-600 dark:text-gray-400 text-lg mb-4">
             No services found. Create your first service.
           </p>

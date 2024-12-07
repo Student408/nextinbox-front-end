@@ -43,26 +43,26 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader>
-        <CardTitle className="text-[#212121] dark:text-white">Email Services</CardTitle>
+        <CardTitle >Email Services</CardTitle>
           </CardHeader>
           <CardContent>
-        <p className="text-4xl font-bold text-[#212121] dark:text-white">{servicesCount}</p>
+        <p className="text-4xl font-bold ">{servicesCount}</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-        <CardTitle className="text-[#212121] dark:text-white">Email Templates</CardTitle>
+        <CardTitle >Email Templates</CardTitle>
           </CardHeader>
           <CardContent>
-        <p className="text-4xl font-bold text-[#212121] dark:text-white">{templatesCount}</p>
+        <p className="text-4xl font-bold ">{templatesCount}</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-        <CardTitle className="text-[#212121] dark:text-white">Daily Rate Limit</CardTitle>
+        <CardTitle >Daily Rate Limit</CardTitle>
           </CardHeader>
           <CardContent>
-        <p className="text-4xl font-bold text-[#212121] dark:text-white">{rateLimit}</p>
+        <p className="text-4xl font-bold ">{rateLimit}</p>
           </CardContent>
         </Card>
       </div>
