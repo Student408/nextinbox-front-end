@@ -45,17 +45,17 @@ body {
 
   .dark {
     --background: 0, 0%, 4%;
-    /* #0e1113 */
+    /* #0a0a0a */
     --foreground: 0 0% 98%;
     --card: 0, 0%, 4%;
-    /* #0e1113 */
+    /* #0a0a0a */
     --card-foreground: 0 0% 98%;
     --popover: 0, 0%, 4%;
-    /* #0e1113 */
+    /* #0a0a0a */
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;
     --primary-foreground: 0, 0%, 4%;
-    /* #0e1113 */
+    /* #0a0a0a */
     --secondary: 200 9% 10%;
     --secondary-foreground: 0 0% 98%;
     --muted: 200 9% 10%;
@@ -73,7 +73,7 @@ body {
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     --sidebar-background: 0, 0%, 4%;
-    /* #0e1113 */
+    /* #0a0a0a */
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
@@ -120,7 +120,7 @@ body {
 }
 
 .dark ::-webkit-scrollbar-track {
-  background: #0e1113;
+  background: #0a0a0a;
 }
 
 .dark ::-webkit-scrollbar-thumb {
