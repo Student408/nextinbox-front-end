@@ -1,10 +1,10 @@
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { toast } from '@/components/ui/use-toast'
-import { Key, Copy, RefreshCw, Check } from 'lucide-react'
-import { regenerateUserKey } from '@/lib/utils/profile'
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "@/components/ui/use-toast";
+import { Key, Copy, RefreshCw, Check } from "lucide-react";
+import { regenerateUserKey } from "@/lib/utils/profile";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,60 +15,60 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 
 interface ApiKeySettingsProps {
   profile: {
-    user_id: string
-    user_key: string | null
-  } | null
-  onUpdate: () => void
+    user_id: string;
+    user_key: string | null;
+  } | null;
+  onUpdate: () => void;
 }
 
 export function ApiKeySettings({ profile, onUpdate }: ApiKeySettingsProps) {
-  const [loading, setLoading] = useState(false)
-  const [showKey, setShowKey] = useState(false)
-  const [isCopied, setIsCopied] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [showKey, setShowKey] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   async function handleGenerateKey() {
-    if (!profile?.user_id) return
+    if (!profile?.user_id) return;
 
     try {
-      setLoading(true)
-      const { error } = await regenerateUserKey(profile.user_id)
+      setLoading(true);
+      const { error } = await regenerateUserKey(profile.user_id);
 
-      if (error) throw error
+      if (error) throw error;
 
       toast({
-        title: 'Success',
-        description: 'API key generated successfully',
-      })
+        title: "Success",
+        description: "API key generated successfully",
+      });
 
-      onUpdate()
+      onUpdate();
     } catch (error) {
-      console.error('Error generating API key:', error)
+      console.error("Error generating API key:", error);
       toast({
-        title: 'Error',
-        description: 'Failed to generate API key',
-        variant: 'destructive',
-      })
+        title: "Error",
+        description: "Failed to generate API key",
+        variant: "destructive",
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   function copyToClipboard() {
     if (profile?.user_key) {
-      navigator.clipboard.writeText(profile.user_key)
-      setIsCopied(true)
+      navigator.clipboard.writeText(profile.user_key);
+      setIsCopied(true);
       toast({
-        title: 'Copied',
-        description: 'API key copied to clipboard',
-      })
-      
+        title: "Copied",
+        description: "API key copied to clipboard",
+      });
+
       setTimeout(() => {
-        setIsCopied(false)
-      }, 2000)
+        setIsCopied(false);
+      }, 2000);
     }
   }
 
@@ -86,9 +86,9 @@ export function ApiKeySettings({ profile, onUpdate }: ApiKeySettingsProps) {
             <div className="relative flex-1">
               <Input
                 id="apiKey"
-                value={profile?.user_key || ''}
+                value={profile?.user_key || ""}
                 readOnly
-                type={showKey ? 'text' : 'password'}
+                type={showKey ? "text" : "password"}
                 className="font-mono pr-24"
               />
               {profile?.user_key && (
@@ -100,7 +100,7 @@ export function ApiKeySettings({ profile, onUpdate }: ApiKeySettingsProps) {
                     className="px-3 h-full text-xs"
                     onClick={() => setShowKey(!showKey)}
                   >
-                    {showKey ? 'Hide' : 'Show'}
+                    {showKey ? "Hide" : "Show"}
                   </Button>
                 </div>
               )}
@@ -121,7 +121,8 @@ export function ApiKeySettings({ profile, onUpdate }: ApiKeySettingsProps) {
             )}
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
-            Your API key grants access to the NextInBox API. Keep it secure and never share it.
+            Your API key grants access to the NextInBox API. Keep it secure and
+            never share it.
           </p>
         </div>
 
@@ -131,15 +132,33 @@ export function ApiKeySettings({ profile, onUpdate }: ApiKeySettingsProps) {
               disabled={loading}
               className="bg-[#FF6C37] hover:bg-[#FF6C37]/90"
             >
-              <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-              {loading ? 'Generating...' : profile?.user_key ? 'Regenerate Key' : 'Generate Key'}
+              <RefreshCw
+                className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`}
+              />
+              {loading
+                ? "Generating..."
+                : profile?.user_key
+                ? "Regenerate Key"
+                : "Generate Key"}
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Regenerate API Key?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action will invalidate your existing API key. Any applications or scripts using the current key will stop working until updated with the new key.
+                <ul className="list-disc pl-5 space-y-2">
+                  <li>
+                    This action will invalidate your existing API key, causing
+                    any applications or scripts using it to stop working until
+                    updated with the new key.
+                  </li>
+                  <li>
+                    An API key can send up to 300 emails per day, depending on
+                    your service provider&apos;s limit. If the provider allows
+                    500 emails per day, that will be the maximum limit, even if
+                    you regenerate the API key.
+                  </li>
+                </ul>
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -155,5 +174,5 @@ export function ApiKeySettings({ profile, onUpdate }: ApiKeySettingsProps) {
         </AlertDialog>
       </div>
     </div>
-  )
+  );
 }
