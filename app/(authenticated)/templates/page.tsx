@@ -8,6 +8,7 @@ import { FileTerminal, Plus } from "lucide-react";
 import { TemplateDialog } from "@/components/templates/template-dialog";
 import { TemplateCard } from "@/components/templates/template-card";
 import { EmptyState } from "@/components/templates/empty-state";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Template {
   template_id: string;
@@ -97,14 +98,18 @@ export default function TemplatesPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-6 py-4">
-        <div className="animate-pulse">
-          <div className="h-8 w-48 bg-gray-200 rounded mb-6"></div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-[200px] bg-gray-200 rounded"></div>
-            ))}
-          </div>
+      <div className="container mx-auto px-6 py-4 dark:bg-background dark:text-gray-100">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold flex items-center text-[#FF6C37]">
+            <FileTerminal className="mr-2" /> Email Templates
+          </h2>
+          <Skeleton className="h-10 w-[140px]" />
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-[200px] w-full" />
+          ))}
         </div>
       </div>
     );
