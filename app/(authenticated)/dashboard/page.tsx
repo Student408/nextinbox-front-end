@@ -37,14 +37,17 @@ export default function DashboardPage() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    // Update to fetch successful emails from logs table
     const { count: todayEmailsCount } = await supabase
-      .from("emails")
+      .from("logs")
       .select("*", { count: "exact", head: true })
-      .gte("sent_at", today.toISOString());
+      .eq("status", "success")
+      .gte("created_at", today.toISOString());
 
     const { count: allEmailsCount } = await supabase
-      .from("emails")
-      .select("*", { count: "exact", head: true });
+      .from("logs")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "success");
 
     const { count: todayFailedCount } = await supabase
       .from("logs")
