@@ -47,11 +47,8 @@ export default function AuthenticatedLayout({
   const [responseError, setResponseError] = useState<string>("");
   const [apiErrors, setApiErrors] = useState<string[]>([]);
   const [responseSuccess, setResponseSuccess] = useState<boolean | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  useEffect(() => {
-    setIsDialogOpen(true);
-  }, []);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -345,7 +342,7 @@ export default function AuthenticatedLayout({
         <main className="flex-1 overflow-auto p-4 bg-background">{children}</main>
 
         {/* Test Mail Button */}
-        <Dialog defaultOpen={true} open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Card
               className="border-2 border-gray-200 hover:border-[#FF6C37]/50 hover:shadow-lg transition-all duration-300 group dark:border-gray-700 dark:hover:border-[#FF6C37]/50 cursor-pointer rounded-full fixed bottom-8 right-8 w-16 h-16 flex items-center justify-center"
