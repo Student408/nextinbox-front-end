@@ -355,20 +355,20 @@ export default function AuthenticatedLayout({
         {/* Test Mail Button */}
         <Dialog>
           <DialogTrigger asChild>
-            <Card className="border-2 border-gray-200 hover:border-[#FF6C37]/50 hover:shadow-lg transition-all duration-300 group dark:border-gray-700 dark:hover:border-[#FF6C37]/50 cursor-pointer rounded-full fixed bottom-4 right-4 w-16 h-16 flex items-center justify-center">
+            <Card className="border-2 border-gray-200 hover:border-[#FF6C37]/50 hover:shadow-lg transition-all duration-300 group dark:border-gray-700 dark:hover:border-[#FF6C37]/50 cursor-pointer rounded-full fixed bottom-8 right-8 w-16 h-16 flex items-center justify-center">
               <Mail className="text-[#FF6C37] w-8 h-8" />
             </Card>
           </DialogTrigger>
-          <DialogContent className="animate-popup">
+          <DialogContent className="animate-popup max-w-md mx-auto">
             <DialogHeader>
-              <DialogTitle>Send Test Mail</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-2xl font-semibold">Send Test Mail</DialogTitle>
+              <DialogDescription className="text-sm text-muted-foreground">
                 Send a test email to verify your service and template configuration.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <Select onValueChange={setSelectedService}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select service" />
                 </SelectTrigger>
                 <SelectContent>
@@ -380,7 +380,7 @@ export default function AuthenticatedLayout({
                 </SelectContent>
               </Select>
               <Select onValueChange={setSelectedTemplate}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select template" />
                 </SelectTrigger>
                 <SelectContent>
@@ -396,6 +396,7 @@ export default function AuthenticatedLayout({
                 type="email"
                 value={testEmail}
                 onChange={(e) => setTestEmail(e.target.value)}
+                className="w-full"
               />
             </div>
             {(responseSuccess !== null || responseError || apiErrors.length > 0) && (
@@ -419,8 +420,8 @@ export default function AuthenticatedLayout({
                 )}
               </div>
             )}
-            <DialogFooter>
-              <Button onClick={handleTestMail} disabled={isLoading}>
+            <DialogFooter className="flex justify-end">
+              <Button onClick={handleTestMail} disabled={isLoading} className="w-full sm:w-auto">
                 {isLoading ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : null}
