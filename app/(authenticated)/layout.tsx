@@ -29,8 +29,8 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 
 // Add the following constants below the imports
-const API_URL = process.env.NEXT_PUBLIC_NEXTINBOX_API_URL || 'http://localhost:8080';
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'NextInBox';
+const API_URL = process.env.NEXT_PUBLIC_NEXTINBOX_API_URL as string;
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
 
 // Custom hook for sidebar state
 const useSidebar = () => {
