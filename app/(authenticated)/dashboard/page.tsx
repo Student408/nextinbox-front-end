@@ -4,6 +4,27 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LayoutGrid, Mail, FileText, Zap, Send, ToggleLeft, ToggleRight, AlertCircle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'NextInBox';
 
 export default function DashboardPage() {
   const [servicesCount, setServicesCount] = useState(0);
@@ -15,9 +36,18 @@ export default function DashboardPage() {
   const [failedEmailsToday, setFailedEmailsToday] = useState(0);
   const [totalFailedEmails, setTotalFailedEmails] = useState(0);
   const [failedEmailPeriod, setFailedEmailPeriod] = useState("today");
+  const [services, setServices] = useState<{ service_id: string; email_id: string }[]>([]);
+  const [templates, setTemplates] = useState<{ template_id: string; name: string }[]>([]);
+  const [selectedService, setSelectedService] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState("");
+  const [testEmail, setTestEmail] = useState("");
+  const [userKey, setUserKey] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchCounts();
+    fetchServicesAndTemplates();
+    fetchUserKey();
   }, []);
 
   async function fetchCounts() {
@@ -67,6 +97,67 @@ export default function DashboardPage() {
     setTotalEmails(allEmailsCount || 0);
     setFailedEmailsToday(todayFailedCount || 0);
     setTotalFailedEmails(totalFailedCount || 0);
+  }
+
+  async function fetchServicesAndTemplates() {
+    const { data: servicesData } = await supabase
+      .from("services")
+      .select("service_id, email_id");
+    
+    const { data: templatesData } = await supabase
+      .from("templates")
+      .select("template_id, name");
+
+    setServices(servicesData || []);
+    setTemplates(templatesData || []);
+  }
+
+  async function fetchUserKey() {
+    const { data } = await supabase
+      .from("profile")
+      .select("user_key")
+      .single();
+    
+    setUserKey(data?.user_key || "");
+  }
+
+  async function handleTestMail() {
+    if (!selectedService || !selectedTemplate || !testEmail) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/send-emails`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_key: userKey,
+          service_id: selectedService,
+          template_id: selectedTemplate,
+          recipients: [
+            {
+              email_address: testEmail,
+              name: APP_NAME + " User"
+            }
+          ],
+          parameters: {
+            name: APP_NAME + " User"
+          }
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to send test mail");
+      toast.success("Test mail sent successfully!");
+    } catch (error) {
+      toast.error("Failed to send test mail");
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -180,6 +271,67 @@ export default function DashboardPage() {
             </p>
           </CardContent>
         </Card>
+
+        <Dialog>
+          <DialogTrigger asChild>
+            <Card className="border-2 border-gray-200 hover:border-[#FF6C37]/50 hover:shadow-lg transition-all duration-300 group dark:border-gray-700 dark:hover:border-[#FF6C37]/50 cursor-pointer">
+              <CardHeader className="p-4 pb-2">
+                <div className="flex items-center gap-2">
+                  <Mail className="text-[#FF6C37] w-6 h-6" />
+                  <CardTitle className="text-lg">Test Mail</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4 pt-2">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  Send a test email
+                </p>
+              </CardContent>
+            </Card>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Send Test Mail</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <Select onValueChange={setSelectedService}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select service" />
+                </SelectTrigger>
+                <SelectContent>
+                  {services.map((service) => (
+                    <SelectItem key={service.service_id} value={service.service_id}>
+                      {service.email_id}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select onValueChange={setSelectedTemplate}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select template" />
+                </SelectTrigger>
+                <SelectContent>
+                  {templates.map((template) => (
+                    <SelectItem key={template.template_id} value={template.template_id}>
+                      {template.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Input
+                placeholder="Test email address"
+                type="email"
+                value={testEmail}
+                onChange={(e) => setTestEmail(e.target.value)}
+              />
+              <Button onClick={handleTestMail} disabled={isLoading}>
+                {isLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : null}
+                Send Test Mail
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
