@@ -4,19 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import {
-  ChevronLeft,
-  ChevronRight,
-  LayoutGrid,
-  FileText,
-  Settings,
-  FileTerminal,
-  ContactRound,
-  FileClock,
-  LogOut,
-  PlugZap,
-  Search,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, LayoutGrid, FileText, Settings, FileTerminal, ContactRound, FileClock, LogOut, PlugZap, Search } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { NotificationList } from "@/components/notifications/notification-list";
@@ -28,11 +16,9 @@ import { Loader2, Mail } from 'lucide-react';
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 
-// Add the following constants below the imports
 const API_URL = process.env.NEXT_PUBLIC_NEXTINBOX_API_URL as string;
 const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
 
-// Custom hook for sidebar state
 const useSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -61,6 +47,11 @@ export default function AuthenticatedLayout({
   const [responseError, setResponseError] = useState<string>("");
   const [apiErrors, setApiErrors] = useState<string[]>([]);
   const [responseSuccess, setResponseSuccess] = useState<boolean | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(true);
+
+  useEffect(() => {
+    setIsDialogOpen(true);
+  }, []);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -112,7 +103,8 @@ export default function AuthenticatedLayout({
     router.push("/");
   };
 
-  async function handleTestMail() {
+  async function handleTestMail(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
     if (!selectedService || !selectedTemplate || !testEmail) {
       toast.error("Please fill in all fields");
       return;
@@ -169,6 +161,7 @@ export default function AuthenticatedLayout({
       }
 
       toast.success("Test mail sent successfully!");
+      setIsDialogOpen(false);
     } catch (error) {
       clearTimeout(timeoutId);
 
@@ -343,7 +336,6 @@ export default function AuthenticatedLayout({
                 <span className="font-semibold text-foreground truncate max-w-xs">
                   {user.name}
                 </span>
-                  {user?.name}
               </div>
             </div>
           </div>
@@ -353,9 +345,12 @@ export default function AuthenticatedLayout({
         <main className="flex-1 overflow-auto p-4 bg-background">{children}</main>
 
         {/* Test Mail Button */}
-        <Dialog>
+        <Dialog defaultOpen={true} open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Card className="border-2 border-gray-200 hover:border-[#FF6C37]/50 hover:shadow-lg transition-all duration-300 group dark:border-gray-700 dark:hover:border-[#FF6C37]/50 cursor-pointer rounded-full fixed bottom-8 right-8 w-16 h-16 flex items-center justify-center">
+            <Card
+              className="border-2 border-gray-200 hover:border-[#FF6C37]/50 hover:shadow-lg transition-all duration-300 group dark:border-gray-700 dark:hover:border-[#FF6C37]/50 cursor-pointer rounded-full fixed bottom-8 right-8 w-16 h-16 flex items-center justify-center"
+              onClick={() => setIsDialogOpen(true)}
+            >
               <Mail className="text-[#FF6C37] w-8 h-8" />
             </Card>
           </DialogTrigger>
@@ -421,7 +416,7 @@ export default function AuthenticatedLayout({
               </div>
             )}
             <DialogFooter className="flex justify-end">
-              <Button onClick={handleTestMail} disabled={isLoading} className="w-full sm:w-auto">
+              <Button onClick={handleTestMail} disabled={isLoading || !selectedService || !selectedTemplate || !testEmail} className="w-full sm:w-auto">
                 {isLoading ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : null}
@@ -449,3 +444,4 @@ export default function AuthenticatedLayout({
     </div>
   );
 }
+
