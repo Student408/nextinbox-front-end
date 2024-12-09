@@ -7,13 +7,15 @@ import { LogTable } from '@/components/logs/log-table'
 import { LogWithDetails } from '@/types/logs'
 import { Skeleton } from '@/components/ui/skeleton'
 import { SortOptions } from '@/components/logs/sort-options'
-import { sortLogs } from '@/lib/utils/sorting'
+import {  filterAndSortLogs } from '@/lib/utils/sorting'
 
 export default function LogsPage() {
   const [logs, setLogs] = useState<LogWithDetails[]>([])
   const [loading, setLoading] = useState(true)
   const [sortBy, setSortBy] = useState<"date" | "status">("date")
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
+  const [selectedDate, setSelectedDate] = useState<Date>()
+  const [showAllLogs, setShowAllLogs] = useState(false)
 
   useEffect(() => {
     fetchLogs()
@@ -68,7 +70,16 @@ export default function LogsPage() {
     }
   }
 
-  const sortedLogs = sortLogs(logs, sortBy, sortOrder)
+  const handleDateSelect = (date?: Date) => {
+    setSelectedDate(date);
+  }
+
+  const handleShowAllChange = (show: boolean) => {
+    setShowAllLogs(show);
+    setSelectedDate(undefined);
+  }
+
+  const sortedAndFilteredLogs = filterAndSortLogs(logs, sortBy, sortOrder, selectedDate, showAllLogs)
 
   if (loading) {
     return (
@@ -100,9 +111,13 @@ export default function LogsPage() {
           <SortOptions
             sortBy={sortBy}
             sortOrder={sortOrder}
+            selectedDate={selectedDate}
+            showAllLogs={showAllLogs}
             onSortChange={handleSortChange}
+            onDateSelect={handleDateSelect}
+            onShowAllChange={handleShowAllChange}
           />
-          <LogTable logs={sortedLogs} />
+          <LogTable logs={sortedAndFilteredLogs} />
         </>
       )}
     </div>

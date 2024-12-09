@@ -1,12 +1,5 @@
 import { LogWithDetails } from "@/types/logs";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+
 import { formatDate } from "@/lib/utils/date";
 import { Badge } from "@/components/ui/badge";
 
@@ -17,34 +10,34 @@ interface LogTableProps {
 export function LogTable({ logs }: LogTableProps) {
   return (
     <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Created</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Template Name</TableHead>
-            <TableHead>Host Address</TableHead>
-            <TableHead>Mail ID</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+      <table className="w-full">
+        <thead>
+          <tr className="border-b">
+            <th className="p-3 text-left text-[#FF6C37] font-medium">Created</th>
+            <th className="p-3 text-left text-[#FF6C37] font-medium">Status</th>
+            <th className="p-3 text-left text-[#FF6C37] font-medium">Template Name</th>
+            <th className="p-3 text-left text-[#FF6C37] font-medium">Host Address</th>
+            <th className="p-3 text-left text-[#FF6C37] font-medium">Mail ID</th>
+          </tr>
+        </thead>
+        <tbody>
           {logs.map((log) => (
-            <TableRow key={log.log_id}>
-              <TableCell>{formatDate(log.created_at)}</TableCell>
-              <TableCell>
+            <tr key={log.log_id}>
+              <td>{formatDate(log.created_at)}</td>
+              <td>
                 <Badge
                   variant={log.status === "success" ? "success" : "destructive"}
                 >
                   {log.status}
                 </Badge>
-              </TableCell>
-              <TableCell>{log.template_name}</TableCell>
-              <TableCell>{log.host_address}</TableCell>
-              <TableCell>{log.email_id}</TableCell>
-            </TableRow>
+              </td>
+              <td>{log.template_name}</td>
+              <td>{log.host_address}</td>
+              <td>{log.email_id}</td>
+            </tr>
           ))}
-        </TableBody>
-      </Table>
+        </tbody>
+      </table>
     </div>
   );
 }
