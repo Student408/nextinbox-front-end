@@ -20,6 +20,17 @@ import {
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { NotificationList } from "@/components/notifications/notification-list";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Loader2, Mail } from 'lucide-react';
+import { Card } from "@/components/ui/card";
+import { toast } from "sonner";
+
+// Add the following constants below the imports
+const API_URL = process.env.NEXT_PUBLIC_NEXTINBOX_API_URL || 'http://localhost:8080';
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'NextInBox';
 
 // Custom hook for sidebar state
 const useSidebar = () => {
@@ -40,6 +51,16 @@ export default function AuthenticatedLayout({
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const router = useRouter();
   const { isCollapsed, toggleSidebar } = useSidebar();
+  const [services, setServices] = useState<{ service_id: string; email_id: string }[]>([]);
+  const [templates, setTemplates] = useState<{ template_id: string; name: string }[]>([]);
+  const [selectedService, setSelectedService] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState("");
+  const [testEmail, setTestEmail] = useState("");
+  const [userKey, setUserKey] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [responseError, setResponseError] = useState<string>("");
+  const [apiErrors, setApiErrors] = useState<string[]>([]);
+  const [responseSuccess, setResponseSuccess] = useState<boolean | null>(null);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -55,10 +76,128 @@ export default function AuthenticatedLayout({
     checkUser();
   }, [router]);
 
+  useEffect(() => {
+    const fetchServicesAndTemplates = async () => {
+      try {
+        const { data: servicesData, error: servicesError } = await supabase.from("services").select("service_id, email_id");
+        if (servicesError) throw servicesError;
+
+        const { data: templatesData, error: templatesError } = await supabase.from("templates").select("template_id, name");
+        if (templatesError) throw templatesError;
+
+        setServices(servicesData || []);
+        setTemplates(templatesData || []);
+      } catch (error) {
+        handleFetchError(error);
+      }
+    };
+
+    const fetchUserKey = async () => {
+      try {
+        const { data, error } = await supabase.from("profile").select("user_key").single();
+        if (error) throw error;
+
+        setUserKey(data?.user_key || "");
+      } catch (error) {
+        handleFetchError(error);
+      }
+    };
+
+    fetchServicesAndTemplates();
+    fetchUserKey();
+  }, []);
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     router.push("/");
   };
+
+  async function handleTestMail() {
+    if (!selectedService || !selectedTemplate || !testEmail) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    setIsLoading(true);
+    setResponseError("");
+    setApiErrors([]);
+    setResponseSuccess(null);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+    try {
+      const response = await fetch(`${API_URL}/send-emails`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_key: userKey,
+          service_id: selectedService,
+          template_id: selectedTemplate,
+          recipients: [
+            {
+              email_address: testEmail,
+              name: APP_NAME + " User"
+            }
+          ],
+          parameters: {
+            name: APP_NAME + " User"
+          }
+        }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        setApiErrors(errorData.errors || ["HTTP error occurred"]);
+        setResponseError(errorData.message || `HTTP error! status: ${response.status}`);
+        toast.error(errorData.message || "Failed to send test mail");
+        return;
+      }
+
+      const data = await response.json();
+      setResponseSuccess(data.success);
+
+      if (!data.success) {
+        setApiErrors(data.errors || ["Unknown error occurred"]);
+        toast.error("Failed to send test mail");
+        return;
+      }
+
+      toast.success("Test mail sent successfully!");
+    } catch (error) {
+      clearTimeout(timeoutId);
+
+      let errorMessage = "Failed to send test mail";
+
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          errorMessage = "Request timed out. The server might be down or not responding.";
+        } else if (error instanceof TypeError && error.message === "Failed to fetch") {
+          errorMessage = "Unable to connect to the API. Please check your internet connection or try again later.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      setResponseError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  function handleFetchError(error: unknown) {
+    if (error instanceof Error) {
+      toast.error(`An error occurred: ${error.message}`);
+    } else {
+      toast.error("An unknown error occurred while fetching data.");
+    }
+  }
 
   if (!user) {
     return (
@@ -201,10 +340,10 @@ export default function AuthenticatedLayout({
               <NotificationList />
 
               <div className="flex items-center">
-                <span className="text-sm text-muted-foreground mr-2">Welcome,</span>
                 <span className="font-semibold text-foreground truncate max-w-xs">
                   {user.name}
                 </span>
+                  {user?.name}
               </div>
             </div>
           </div>
@@ -212,7 +351,100 @@ export default function AuthenticatedLayout({
 
         {/* Main Content */}
         <main className="flex-1 overflow-auto p-4 bg-background">{children}</main>
+
+        {/* Test Mail Button */}
+        <Dialog>
+          <DialogTrigger asChild>
+            <Card className="border-2 border-gray-200 hover:border-[#FF6C37]/50 hover:shadow-lg transition-all duration-300 group dark:border-gray-700 dark:hover:border-[#FF6C37]/50 cursor-pointer rounded-full fixed bottom-4 right-4 w-16 h-16 flex items-center justify-center">
+              <Mail className="text-[#FF6C37] w-8 h-8" />
+            </Card>
+          </DialogTrigger>
+          <DialogContent className="animate-popup">
+            <DialogHeader>
+              <DialogTitle>Send Test Mail</DialogTitle>
+              <DialogDescription>
+                Send a test email to verify your service and template configuration.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <Select onValueChange={setSelectedService}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select service" />
+                </SelectTrigger>
+                <SelectContent>
+                  {services.map((service) => (
+                    <SelectItem key={service.service_id} value={service.service_id}>
+                      {service.email_id}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select onValueChange={setSelectedTemplate}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select template" />
+                </SelectTrigger>
+                <SelectContent>
+                  {templates.map((template) => (
+                    <SelectItem key={template.template_id} value={template.template_id}>
+                      {template.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Input
+                placeholder="Test email address"
+                type="email"
+                value={testEmail}
+                onChange={(e) => setTestEmail(e.target.value)}
+              />
+            </div>
+            {(responseSuccess !== null || responseError || apiErrors.length > 0) && (
+              <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-md text-sm">
+                {responseSuccess !== null && (
+                  <p className={`mb-1 ${responseSuccess ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
+                    Status: {responseSuccess ? "Success" : "Failed"}
+                  </p>
+                )}
+                {responseError && (
+                  <p className="text-red-600 dark:text-red-400">
+                    Error: {responseError}
+                  </p>
+                )}
+                {apiErrors.length > 0 && (
+                  <div className="text-red-600 dark:text-red-400">
+                    {apiErrors.map((error, index) => (
+                      <p key={index} className="mt-1">• {error}</p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+            <DialogFooter>
+              <Button onClick={handleTestMail} disabled={isLoading}>
+                {isLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : null}
+                Send Test Mail
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
+      <style jsx>{`
+        .animate-popup {
+          animation: popup 0.3s ease-out;
+        }
+        @keyframes popup {
+          0% {
+            transform: scale(0.9);
+            opacity: 0;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   );
 }
