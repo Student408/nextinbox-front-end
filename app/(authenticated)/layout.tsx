@@ -15,11 +15,11 @@ import {
   FileClock,
   LogOut,
   PlugZap,
-  Bell,
   Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { NotificationList } from "@/components/notifications/notification-list";
 
 // Custom hook for sidebar state
 const useSidebar = () => {
@@ -198,12 +198,7 @@ export default function AuthenticatedLayout({
             {/* User and Notifications */}
             <div className="flex items-center ml-auto space-x-4">
               <ThemeToggle />
-              <button
-                title="Notifications"
-                className="text-muted-foreground hover:text-[#FF6C37] transition"
-              >
-                <Bell className="w-5 h-5" />
-              </button>
+              <NotificationList />
 
               <div className="flex items-center">
                 <span className="text-sm text-muted-foreground mr-2">Welcome,</span>
