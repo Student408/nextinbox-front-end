@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LayoutGrid, Mail, FileText, Zap, Send, ArrowRight, AlertCircle } from "lucide-react";
+import { LayoutGrid, Mail, FileText, Zap, Send, ToggleLeft, ToggleRight, AlertCircle } from "lucide-react";
 
 export default function DashboardPage() {
   const [servicesCount, setServicesCount] = useState(0);
@@ -122,10 +122,10 @@ export default function DashboardPage() {
                 <Send className="text-[#FF6C37] w-6 h-6" />
                 <CardTitle className="text-lg">Email Stats</CardTitle>
               </div>
-              <span className="text-sm text-gray-500 flex items-center gap-1">
-                {emailPeriod === "today" ? "Today" : "Total"}
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </span>
+              {emailPeriod === "today" ? 
+                <ToggleLeft className="w-5 h-5 text-gray-500" /> : 
+                <ToggleRight className="w-5 h-5 text-gray-500" />
+              }
             </div>
           </CardHeader>
           <CardContent className="p-4 pt-2">
@@ -165,10 +165,10 @@ export default function DashboardPage() {
                 <AlertCircle className="text-red-500 w-6 h-6" />
                 <CardTitle className="text-lg">Failed</CardTitle>
               </div>
-              <span className="text-sm text-gray-500 flex items-center gap-1">
-                {failedEmailPeriod === "today" ? "Today" : "Total"}
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </span>
+              {failedEmailPeriod === "today" ? 
+                <ToggleLeft className="w-5 h-5 text-gray-500" /> : 
+                <ToggleRight className="w-5 h-5 text-gray-500" />
+              }
             </div>
           </CardHeader>
           <CardContent className="p-4 pt-2">
