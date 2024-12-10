@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import { FileSpreadsheet } from 'lucide-react'
+import { Workflow } from 'lucide-react'
 import { AutomateForm } from '@/components/automate/automate-form'
 import { CsvUploader } from '@/components/automate/csv-uploader'
 import { PreviewEmail } from '@/components/automate/preview-email'
@@ -160,7 +160,7 @@ export default function AutomatePage() {
     return (
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center mb-6">
-          <FileSpreadsheet className="mr-2 text-[#FF6C37]" />
+          <Workflow className="mr-2 text-[#FF6C37]" />
           <h2 className="text-2xl font-bold text-[#FF6C37]">Email Automation</h2>
         </div>
         <div className="space-y-4">
@@ -173,7 +173,7 @@ export default function AutomatePage() {
   return (
     <div className="container mx-auto px-6 py-4">
       <div className="flex items-center mb-6">
-        <FileSpreadsheet className="mr-2 text-[#FF6C37]" />
+        <Workflow className="mr-2 text-[#FF6C37]" />
         <h2 className="text-2xl font-bold text-[#FF6C37]">Email Automation</h2>
       </div>
       

@@ -18,7 +18,8 @@ export async function middleware(req: NextRequest) {
     req.nextUrl.pathname.startsWith('/contacts') ||
     req.nextUrl.pathname.startsWith('/logs') ||
     req.nextUrl.pathname.startsWith('/settings') ||
-    req.nextUrl.pathname.startsWith('/docs')
+    req.nextUrl.pathname.startsWith('/docs') ||
+    req.nextUrl.pathname.startsWith('/automate')
   )) {
     const redirectUrl = req.nextUrl.clone()
     redirectUrl.pathname = '/auth'
@@ -45,6 +46,7 @@ export const config = {
     '/logs/:path*',
     '/settings/:path*',
     '/docs/:path*',
+    '/automate/:path*',
     '/auth',
   ],
 }
