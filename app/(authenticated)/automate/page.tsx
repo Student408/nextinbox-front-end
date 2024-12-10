@@ -25,6 +25,7 @@ export default function AutomatePage() {
   const [placeholders, setPlaceholders] = useState<string[]>([])
   const [fieldMappings, setFieldMappings] = useState<Record<string, string>>({})
   const [previewData, setPreviewData] = useState<Record<string, string>>({})
+  const [emailLogs, setEmailLogs] = useState<{ email: string; success: boolean; message: string }[]>([])
 
   useEffect(() => {
     fetchServicesAndTemplates()
@@ -95,6 +96,22 @@ export default function AutomatePage() {
     }
   }
 
+  useEffect(() => {
+    if (placeholders.length > 0 && csvData.length > 0) {
+      const csvFields = Object.keys(csvData[0])
+      const newFieldMappings: Record<string, string> = {}
+      placeholders.forEach((placeholder) => {
+        const matchedField = csvFields.find(
+          (field) => field.toLowerCase() === placeholder.toLowerCase()
+        )
+        if (matchedField) {
+          newFieldMappings[placeholder] = matchedField
+        }
+      })
+      setFieldMappings(newFieldMappings)
+    }
+  }, [placeholders, csvData])
+
   const handleFieldMapping = (placeholder: string, csvField: string) => {
     setFieldMappings(prev => ({
       ...prev,
@@ -139,14 +156,14 @@ export default function AutomatePage() {
         }),
       })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Failed to send emails')
-      }
-
       const data = await response.json()
+
       if (data.success) {
-        toast.success(`Successfully sent emails to ${recipients.length} recipients`)
+        if (Array.isArray(data.results)) {
+          setEmailLogs(data.results)
+        } else {
+          toast.success(`Successfully sent emails to ${recipients.length} recipients`)
+        }
       } else {
         throw new Error(data.message || 'Failed to send emails')
       }
@@ -188,6 +205,7 @@ export default function AutomatePage() {
             onTemplateChange={handleTemplateChange}
             placeholders={placeholders}
             csvFields={csvData.length > 0 ? Object.keys(csvData[0]) : []}
+            fieldMappings={fieldMappings}
             onFieldMapping={handleFieldMapping}
           />
           
@@ -200,6 +218,7 @@ export default function AutomatePage() {
             previewData={previewData}
             fieldMappings={fieldMappings}
             onSendEmails={handleSendEmails}
+            emailLogs={emailLogs}
           />
         </div>
       </div>

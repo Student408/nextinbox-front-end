@@ -14,6 +14,7 @@ interface AutomateFormProps {
   placeholders: string[]
   csvFields: string[]
   onFieldMapping: (placeholder: string, csvField: string) => void
+  fieldMappings: Record<string, string>
 }
 
 export function AutomateForm({
@@ -26,6 +27,7 @@ export function AutomateForm({
   placeholders,
   csvFields,
   onFieldMapping,
+  fieldMappings,
 }: AutomateFormProps) {
   return (
     <Card>
@@ -71,7 +73,10 @@ export function AutomateForm({
             {placeholders.map((placeholder) => (
               <div key={placeholder} className="space-y-2">
                 <Label>{placeholder}</Label>
-                <Select onValueChange={(value) => onFieldMapping(placeholder, value)}>
+                <Select
+                  value={fieldMappings[placeholder] || ""}
+                  onValueChange={(value) => onFieldMapping(placeholder, value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder={`Select field for ${placeholder}`} />
                   </SelectTrigger>

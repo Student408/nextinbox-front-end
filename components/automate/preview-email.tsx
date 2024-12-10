@@ -9,6 +9,7 @@ interface PreviewEmailProps {
   previewData: Record<string, string>
   fieldMappings: Record<string, string>
   onSendEmails: () => Promise<void>
+  emailLogs: { email: string; success: boolean; message: string }[]
 }
 
 export function PreviewEmail({
@@ -16,6 +17,7 @@ export function PreviewEmail({
   previewData,
   fieldMappings,
   onSendEmails,
+  emailLogs,
 }: PreviewEmailProps) {
   const [sending, setSending] = useState(false)
 
@@ -29,6 +31,13 @@ export function PreviewEmail({
     })
     return content
   }
+
+  const recipientEmail =
+    previewData['email'] ||
+    previewData['email_address'] ||
+    previewData['Email'] ||
+    previewData['EMAIL'] ||
+    'Recipient'
 
   const handleSend = async () => {
     setSending(true)
@@ -82,6 +91,10 @@ export function PreviewEmail({
             <p className="text-muted-foreground">{template.from_name}</p>
           </div>
           <div>
+            <h3 className="font-semibold">To</h3>
+            <p className="text-muted-foreground">{recipientEmail}</p>
+          </div>
+          <div>
             <h3 className="font-semibold">Content</h3>
             <div
               className="p-4 rounded-lg bg-muted/50 prose prose-sm max-w-none"
@@ -89,6 +102,18 @@ export function PreviewEmail({
             />
           </div>
         </div>
+        {emailLogs && emailLogs.length > 0 && (
+          <div className="mt-4">
+            <h3 className="font-semibold">Email Sending Logs</h3>
+            <ul className="text-sm text-muted-foreground list-disc list-inside">
+              {emailLogs.map((log, index) => (
+                <li key={index}>
+                  {log.email}: {log.success ? 'Success' : 'Failed'} - {log.message}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </CardContent>
     </Card>
   )
