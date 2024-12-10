@@ -19,13 +19,12 @@ export default function AutomatePage() {
   const [templates, setTemplates] = useState<Template[]>([])
   const [loading, setLoading] = useState(true)
   const [userKey, setUserKey] = useState<string>('')
-  const [csvData, setCsvData] = useState<Record<string, string>[]>([])
+  const [csvData, setCsvData] = useState<Record<string, string | number>[]>([])
   const [selectedService, setSelectedService] = useState<string>('')
   const [selectedTemplate, setSelectedTemplate] = useState<string>('')
   const [placeholders, setPlaceholders] = useState<string[]>([])
   const [fieldMappings, setFieldMappings] = useState<Record<string, string>>({})
   const [previewData, setPreviewData] = useState<Record<string, string>>({})
-  const [emailLogs, setEmailLogs] = useState<{ email: string; success: boolean; message: string }[]>([])
 
   useEffect(() => {
     fetchServicesAndTemplates()
@@ -89,28 +88,16 @@ export default function AutomatePage() {
     }
   }
 
-  const handleCsvUpload = (data: Record<string, string>[]) => {
+  const handleCsvUpload = (data: Record<string, string | number>[]) => {
     setCsvData(data)
     if (data.length > 0) {
-      setPreviewData(data[0])
+      setPreviewData(
+        Object.fromEntries(
+          Object.entries(data[0]).map(([key, value]) => [key, value.toString()])
+        )
+      )
     }
   }
-
-  useEffect(() => {
-    if (placeholders.length > 0 && csvData.length > 0) {
-      const csvFields = Object.keys(csvData[0])
-      const newFieldMappings: Record<string, string> = {}
-      placeholders.forEach((placeholder) => {
-        const matchedField = csvFields.find(
-          (field) => field.toLowerCase() === placeholder.toLowerCase()
-        )
-        if (matchedField) {
-          newFieldMappings[placeholder] = matchedField
-        }
-      })
-      setFieldMappings(newFieldMappings)
-    }
-  }, [placeholders, csvData])
 
   const handleFieldMapping = (placeholder: string, csvField: string) => {
     setFieldMappings(prev => ({
@@ -138,7 +125,7 @@ export default function AutomatePage() {
       }))
 
       const parameters = Object.entries(fieldMappings).reduce((acc, [placeholder, csvField]) => {
-        acc[placeholder] = csvData.map(row => row[csvField] || '')
+        acc[placeholder] = csvData.map(row => row[csvField]?.toString() || '')
         return acc
       }, {} as Record<string, string[]>)
 
@@ -156,14 +143,14 @@ export default function AutomatePage() {
         }),
       })
 
-      const data = await response.json()
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Failed to send emails')
+      }
 
+      const data = await response.json()
       if (data.success) {
-        if (Array.isArray(data.results)) {
-          setEmailLogs(data.results)
-        } else {
-          toast.success(`Successfully sent emails to ${recipients.length} recipients`)
-        }
+        toast.success(`Successfully sent emails to ${recipients.length} recipients`)
       } else {
         throw new Error(data.message || 'Failed to send emails')
       }
@@ -175,12 +162,12 @@ export default function AutomatePage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex items-center mb-6">
+      <div className="h-full">
+        <div className="flex items-center h-14 px-6 border-b">
           <Workflow className="mr-2 text-[#FF6C37]" />
           <h2 className="text-2xl font-bold text-[#FF6C37]">Email Automation</h2>
         </div>
-        <div className="space-y-4">
+        <div className="p-6">
           <Skeleton className="h-[400px] w-full" />
         </div>
       </div>
@@ -188,38 +175,38 @@ export default function AutomatePage() {
   }
 
   return (
-    <div className="container mx-auto px-6 py-4">
-      <div className="flex items-center mb-6">
+    <div className="h-full">
+      <div className="flex items-center h-14 px-6 border-b">
         <Workflow className="mr-2 text-[#FF6C37]" />
         <h2 className="text-2xl font-bold text-[#FF6C37]">Email Automation</h2>
       </div>
       
-      <div className="grid gap-6 md:grid-cols-2">
-        <div className="space-y-6">
-          <AutomateForm
-            services={services}
-            templates={templates}
-            selectedService={selectedService}
-            selectedTemplate={selectedTemplate}
-            onServiceChange={setSelectedService}
-            onTemplateChange={handleTemplateChange}
-            placeholders={placeholders}
-            csvFields={csvData.length > 0 ? Object.keys(csvData[0]) : []}
-            fieldMappings={fieldMappings}
-            onFieldMapping={handleFieldMapping}
-          />
-          
-          <CsvUploader onUpload={handleCsvUpload} />
-        </div>
+      <div className="p-6">
+        <div className="grid gap-6 md:grid-cols-2 max-w-7xl mx-auto">
+          <div className="space-y-6">
+            <AutomateForm
+              services={services}
+              templates={templates}
+              selectedService={selectedService}
+              selectedTemplate={selectedTemplate}
+              onServiceChange={setSelectedService}
+              onTemplateChange={handleTemplateChange}
+              placeholders={placeholders}
+              csvFields={csvData.length > 0 ? Object.keys(csvData[0]) : []}
+              onFieldMapping={handleFieldMapping}
+            />
+            
+            <CsvUploader onUpload={handleCsvUpload} />
+          </div>
 
-        <div>
-          <PreviewEmail
-            template={templates.find(t => t.template_id === selectedTemplate)}
-            previewData={previewData}
-            fieldMappings={fieldMappings}
-            onSendEmails={handleSendEmails}
-            emailLogs={emailLogs}
-          />
+          <div className="md:sticky md:top-6">
+            <PreviewEmail
+              template={templates.find(t => t.template_id === selectedTemplate)}
+              previewData={previewData}
+              fieldMappings={fieldMappings}
+              onSendEmails={handleSendEmails}
+            />
+          </div>
         </div>
       </div>
     </div>
