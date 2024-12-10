@@ -175,38 +175,41 @@ export default function AutomatePage() {
   }
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="flex items-center h-14 px-6 border-b">
+    <div className="flex flex-col h-full">
+      <div className="flex items-center h-14 px-6 border-b flex-shrink-0">
         <Workflow className="mr-2 text-[#FF6C37]" />
         <h2 className="text-2xl font-bold text-[#FF6C37]">Email Automation</h2>
       </div>
       <div className="flex-1 overflow-auto p-6">
         <div className="grid gap-6 md:grid-cols-2 max-w-7xl mx-auto">
           <div className="space-y-6">
-            <AutomateForm
-              services={services}
-              templates={templates}
-              selectedService={selectedService}
-              selectedTemplate={selectedTemplate}
-              onServiceChange={setSelectedService}
-              onTemplateChange={handleTemplateChange}
-              placeholders={placeholders}
-              csvFields={csvData.length > 0 ? Object.keys(csvData[0]) : []}
-              onFieldMapping={handleFieldMapping}
-            />
-            <CsvUploader onUpload={handleCsvUpload} />
+            <div className="sticky top-0 space-y-6">
+              <AutomateForm
+                services={services}
+                templates={templates}
+                selectedService={selectedService}
+                selectedTemplate={selectedTemplate}
+                onServiceChange={setSelectedService}
+                onTemplateChange={handleTemplateChange}
+                placeholders={placeholders}
+                csvFields={csvData.length > 0 ? Object.keys(csvData[0]) : []}
+                onFieldMapping={handleFieldMapping}
+              />
+              <CsvUploader onUpload={handleCsvUpload} />
+            </div>
           </div>
-          <div>
-            <PreviewEmail
-              template={templates.find(t => t.template_id === selectedTemplate)}
-              previewData={previewData}
-              fieldMappings={fieldMappings}
-              onSendEmails={handleSendEmails}
-            />
+          <div className="relative">
+            <div className="sticky top-0">
+              <PreviewEmail
+                template={templates.find(t => t.template_id === selectedTemplate)}
+                previewData={previewData}
+                fieldMappings={fieldMappings}
+                onSendEmails={handleSendEmails}
+              />
+            </div>
           </div>
         </div>
       </div>
     </div>
   )
 }
-
