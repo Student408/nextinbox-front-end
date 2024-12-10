@@ -175,13 +175,12 @@ export default function AutomatePage() {
   }
 
   return (
-    <div className="h-full">
+    <div className="h-full flex flex-col">
       <div className="flex items-center h-14 px-6 border-b">
         <Workflow className="mr-2 text-[#FF6C37]" />
         <h2 className="text-2xl font-bold text-[#FF6C37]">Email Automation</h2>
       </div>
-      
-      <div className="p-6">
+      <div className="flex-1 overflow-auto p-6">
         <div className="grid gap-6 md:grid-cols-2 max-w-7xl mx-auto">
           <div className="space-y-6">
             <AutomateForm
@@ -195,11 +194,9 @@ export default function AutomatePage() {
               csvFields={csvData.length > 0 ? Object.keys(csvData[0]) : []}
               onFieldMapping={handleFieldMapping}
             />
-            
             <CsvUploader onUpload={handleCsvUpload} />
           </div>
-
-          <div className="md:sticky md:top-6">
+          <div>
             <PreviewEmail
               template={templates.find(t => t.template_id === selectedTemplate)}
               previewData={previewData}
@@ -212,3 +209,4 @@ export default function AutomatePage() {
     </div>
   )
 }
+
