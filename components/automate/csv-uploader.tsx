@@ -6,10 +6,12 @@ import { toast } from 'sonner'
 
 interface CsvUploaderProps {
   onUpload: (data: Record<string, string>[]) => void
+  onRemoveCsv: () => void
 }
 
-export function CsvUploader({ onUpload }: CsvUploaderProps) {
+export function CsvUploader({ onUpload, onRemoveCsv }: CsvUploaderProps) {
   const [loading, setLoading] = useState(false)
+  const [fileName, setFileName] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,6 +40,7 @@ export function CsvUploader({ onUpload }: CsvUploaderProps) {
         })
 
       onUpload(data)
+      setFileName(file.name)
       toast.success('CSV file uploaded successfully')
     } catch (error) {
       console.error('Error parsing CSV:', error)
@@ -48,6 +51,14 @@ export function CsvUploader({ onUpload }: CsvUploaderProps) {
         fileInputRef.current.value = ''
       }
     }
+  }
+
+  const handleRemoveFile = () => {
+    setFileName(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+    onRemoveCsv()
   }
 
   return (
@@ -69,7 +80,7 @@ export function CsvUploader({ onUpload }: CsvUploaderProps) {
           <Button
             onClick={() => fileInputRef.current?.click()}
             variant="outline"
-            disabled={loading}
+            disabled={loading || !!fileName}
             className="w-full"
           >
             {loading ? (
@@ -79,6 +90,18 @@ export function CsvUploader({ onUpload }: CsvUploaderProps) {
             )}
             {loading ? 'Uploading...' : 'Upload CSV'}
           </Button>
+          {fileName && (
+            <div className="mt-4 flex flex-col items-center">
+              <p className="text-sm text-muted-foreground">{fileName}</p>
+              <Button
+                onClick={handleRemoveFile}
+                variant="outline"
+                className="mt-2"
+              >
+                Remove File
+              </Button>
+            </div>
+          )}
           <p className="mt-2 text-sm text-muted-foreground">
             Upload a CSV file with recipient data
           </p>
