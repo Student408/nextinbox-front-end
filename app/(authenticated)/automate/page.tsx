@@ -140,13 +140,37 @@ export default function AutomatePage() {
     }
 
     try {
-      const recipients = csvData.map(row => ({
-        email_address: row.email || row.email_address || row.Email || row.EMAIL,
-        name: row.name || row.Name || row.NAME || 'Recipient'
-      }))
+      // Create recipients array with all mapped fields
+      const recipients = csvData.map(row => {
+        const recipientData: Record<string, string> = {}
+        
+        // Add standard email and name fields
+        recipientData.email_address = row.email?.toString() || 
+                                    row.email_address?.toString() || 
+                                    row.Email?.toString() || 
+                                    row.EMAIL?.toString() || ''
+        
+        recipientData.name = row.name?.toString() || 
+                            row.Name?.toString() || 
+                            row.NAME?.toString() || 
+                            'Recipient'
 
+        // Add all mapped fields to recipient data
+        Object.entries(fieldMappings).forEach(([placeholder, csvField]) => {
+          if (row[csvField] !== undefined) {
+            recipientData[placeholder] = row[csvField].toString()
+          }
+        })
+
+        return recipientData
+      })
+
+      // Create parameters object with all mapped fields
       const parameters = Object.entries(fieldMappings).reduce((acc, [placeholder, csvField]) => {
-        acc[placeholder] = csvData.map(row => row[csvField]?.toString() || '')
+        acc[placeholder] = csvData.map(row => {
+          const value = row[csvField]
+          return value !== undefined ? value.toString() : ''
+        })
         return acc
       }, {} as Record<string, string[]>)
 
