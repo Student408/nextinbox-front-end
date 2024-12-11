@@ -2,7 +2,7 @@ import { Template } from "@/types/templates"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Send, Loader2, Mail } from "lucide-react"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { Badge } from "@/components/ui/badge"
 import DOMPurify from 'dompurify'
 
@@ -22,7 +22,7 @@ export function PreviewEmail({
   const [sending, setSending] = useState(false)
   const iframeRef = useRef<HTMLIFrameElement>(null)
 
-  const renderContent = () => {
+  const renderContent = useCallback(() => {
     if (!template) return ''
 
     let content = template.content
@@ -39,7 +39,7 @@ export function PreviewEmail({
       KEEP_CONTENT: true,
       WHOLE_DOCUMENT: true
     })
-  }
+  }, [template, previewData, fieldMappings])
 
   useEffect(() => {
     if (iframeRef.current) {
@@ -50,7 +50,7 @@ export function PreviewEmail({
         iframeDoc.close()
       }
     }
-  }, [template, previewData, fieldMappings])
+  }, [renderContent])
 
   const getRecipientEmail = () => {
     // Try different common email field names from CSV
@@ -166,7 +166,7 @@ export function PreviewEmail({
           )}
           <div>
             <h3 className="text-sm font-semibold mb-2">Content</h3>
-            <iframe ref={iframeRef} className="w-full h-96 border rounded-lg bg-muted/50" />
+            <iframe ref={iframeRef} className="w-full h-96 border rounded-lg bg-muted/50" title="Email Content Preview" />
           </div>
           {!recipientEmail && (
             <div className="mt-4 p-3 bg-destructive/10 text-destructive rounded-lg text-sm">
