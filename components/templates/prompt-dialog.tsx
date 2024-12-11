@@ -40,7 +40,7 @@ export function PromptDialog({ open, onOpenChange, onGenerated }: PromptDialogPr
       }
 
       const genAI = new GoogleGenerativeAI(API_KEY);
-      const model = genAI.getGenerativeModel({ model: "gemini-exp-1121" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       const fullPrompt = `Generate a responsive HTML email template with the following requirements:
         Content: ${prompt}
@@ -51,7 +51,7 @@ export function PromptDialog({ open, onOpenChange, onGenerated }: PromptDialogPr
         - Use {{.filed}} for dynamic content
         - Use a modern design inspied by POSTMAN API documentation
         - Include a call-to-action button
-        - Use inline CSS for maximum email client compatibility with internal styles for reusability
+        - Use internal styles for reusability and maintainability
         - Make it mobile-responsive
         - Include proper HTML email doctype and meta tags
         - Use table-based layout for better email client support
