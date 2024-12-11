@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'sonner'
 import { extractPlaceholders } from '@/lib/utils/template'
 import { findMatchingFields } from '@/lib/utils/field-mapping'
+import { createEmailRequest } from '@/lib/utils/email'
 
 const API_URL = process.env.NEXT_PUBLIC_NEXTINBOX_API_URL as string
 
@@ -85,7 +86,6 @@ export default function AutomatePage() {
       const extractedPlaceholders = extractPlaceholders(template.content)
       setPlaceholders(extractedPlaceholders)
       
-      // Auto-map fields if CSV data exists
       if (csvData.length > 0) {
         const csvFields = Object.keys(csvData[0])
         const autoMappings = findMatchingFields(extractedPlaceholders, csvFields)
@@ -105,7 +105,6 @@ export default function AutomatePage() {
         )
       )
       
-      // Auto-map fields if template is already selected
       if (placeholders.length > 0) {
         const csvFields = Object.keys(data[0])
         const autoMappings = findMatchingFields(placeholders, csvFields)
@@ -134,58 +133,23 @@ export default function AutomatePage() {
     }
 
     const template = templates.find(t => t.template_id === selectedTemplate)
-    if (!template) {
-      toast.error('Selected template not found')
-      return
-    }
-
+    
     try {
-      // Create recipients array with all mapped fields
-      const recipients = csvData.map(row => {
-        const recipientData: Record<string, string> = {}
-        
-        // Add standard email and name fields
-        recipientData.email_address = row.email?.toString() || 
-                                    row.email_address?.toString() || 
-                                    row.Email?.toString() || 
-                                    row.EMAIL?.toString() || ''
-        
-        recipientData.name = row.name?.toString() || 
-                            row.Name?.toString() || 
-                            row.NAME?.toString() || 
-                            'Recipient'
-
-        // Add all mapped fields to recipient data
-        Object.entries(fieldMappings).forEach(([placeholder, csvField]) => {
-          if (row[csvField] !== undefined) {
-            recipientData[placeholder] = row[csvField].toString()
-          }
-        })
-
-        return recipientData
-      })
-
-      // Create parameters object with all mapped fields
-      const parameters = Object.entries(fieldMappings).reduce((acc, [placeholder, csvField]) => {
-        acc[placeholder] = csvData.map(row => {
-          const value = row[csvField]
-          return value !== undefined ? value.toString() : ''
-        })
-        return acc
-      }, {} as Record<string, string[]>)
+      const emailRequest = createEmailRequest(
+        userKey,
+        selectedService,
+        selectedTemplate,
+        csvData,
+        fieldMappings,
+        template
+      );
 
       const response = await fetch(`${API_URL}/send-emails`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          user_key: userKey,
-          service_id: selectedService,
-          template_id: selectedTemplate,
-          recipients,
-          parameters
-        }),
+        body: JSON.stringify(emailRequest),
       })
 
       if (!response.ok) {
@@ -195,7 +159,7 @@ export default function AutomatePage() {
 
       const data = await response.json()
       if (data.success) {
-        toast.success(`Successfully sent emails to ${recipients.length} recipients`)
+        toast.success(`Successfully sent emails to ${emailRequest.recipients.length} recipients`)
       } else {
         throw new Error(data.message || 'Failed to send emails')
       }
