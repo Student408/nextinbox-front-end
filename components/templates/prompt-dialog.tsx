@@ -40,7 +40,7 @@ export function PromptDialog({ open, onOpenChange, onGenerated }: PromptDialogPr
       }
 
       const genAI = new GoogleGenerativeAI(API_KEY);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+      const model = genAI.getGenerativeModel({ model: "gemini-exp-1121" });
 
       const fullPrompt = `Generate a responsive HTML email template with the following requirements:
         Content: ${prompt}
@@ -48,7 +48,10 @@ export function PromptDialog({ open, onOpenChange, onGenerated }: PromptDialogPr
         Tone: ${tone}
         
         Requirements:
-        - Use inline CSS for maximum email client compatibility
+        - Use {{.filed}} for dynamic content
+        - Use a modern design inspied by POSTMAN API documentation
+        - Include a call-to-action button
+        - Use inline CSS for maximum email client compatibility with internal styles for reusability
         - Make it mobile-responsive
         - Include proper HTML email doctype and meta tags
         - Use table-based layout for better email client support
@@ -57,7 +60,10 @@ export function PromptDialog({ open, onOpenChange, onGenerated }: PromptDialogPr
       const result = await model.generateContent(fullPrompt);
       const generatedHtml = result.response.text();
 
-      onGenerated(generatedHtml);
+      // Remove opening and closing ```html and ``` tags
+      const cleanedHtml = generatedHtml.replace(/```html\n|```\n?/g, "").trim();
+
+      onGenerated(cleanedHtml);
       onOpenChange(false);
       toast({
         title: "Success",

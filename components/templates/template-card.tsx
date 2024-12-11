@@ -50,19 +50,19 @@ export function TemplateCard({ template, onEdit, onDelete }: TemplateCardProps) 
     <>
       <Card className="border-2 border-gray-200 hover:border-[#FF6C37]/50 hover:shadow-lg transition-all duration-300 group dark:border-gray-700 dark:hover:border-[#FF6C37]/50">
         <CardHeader className="p-4 pb-0">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <Code2 className="text-[#FF6C37] w-6 h-6" />
-              <div className="flex flex-col">
-                <h3 className="text-lg font-semibold text-gray-800 truncate max-w-[200px] dark:text-gray-100">
+          <div className="flex justify-between items-center max-w-full gap-4">
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              <Code2 className="text-[#FF6C37] w-6 h-6 flex-shrink-0" />
+              <div className="flex flex-col min-w-0">
+                <h3 className="text-lg font-semibold text-gray-800 truncate dark:text-gray-100">
                   {template.name}
                 </h3>
-                <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-mono truncate">
                   ID: {getPartialTemplateId(template.template_id)}
                 </span>
               </div>
             </div>
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center gap-1 flex-shrink-0">
               <Button
                 onClick={() => copyTemplateId(template.template_id)}
                 variant="ghost"

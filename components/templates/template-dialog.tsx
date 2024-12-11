@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -152,12 +152,43 @@ export function TemplateDialog({
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-[90vw] w-[95vw] max-h-[90vh]">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-              {template ? "Edit Email Template" : "Create Email Template"}
-            </DialogTitle>
+          <DialogHeader className="flex flex-col space-y-4">
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+                {template ? "Edit Email Template" : "Create Email Template"}
+              </DialogTitle>
+              <div className="flex items-center gap-3 mr-10">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowPromptDialog(true)}
+                  className="text-[#FF6C37] border-[#FF6C37]"
+                >
+                  <Wand2 className="w-4 h-4 mr-2" />
+                  Generate
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowPreviewDialog(true)}
+                  className="text-[#FF6C37] border-[#FF6C37]"
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  Preview
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSubmit}
+                  disabled={isLoading}
+                  className="text-[#FF6C37] border-[#FF6C37]"
+                >
+                  {isLoading ? "Saving..." : template ? "Update Template" : "Save Template"}
+                </Button>
+              </div>
+            </div>
           </DialogHeader>
-          <div className="flex flex-col lg:flex-row h-[calc(90vh-180px)]">
+          <div className="flex flex-col lg:flex-row h-[calc(90vh-100px)]">
             <div className="lg:w-[30%] p-4 overflow-y-auto">
               <div className="space-y-4">
                 <div>
@@ -232,37 +263,18 @@ export function TemplateDialog({
                 </div>
               </div>
             </div>
-            <div className="lg:w-[70%] h-full p-4 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
-              <div className="flex items-center justify-between mb-2">
-                <Label htmlFor="content" className="text-gray-700 dark:text-gray-300">
+            <div className="lg:w-[70%] h-full p-2 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+              <div className="mb-4 px-2">
+                <Label htmlFor="content" className="text-gray-700 dark:text-gray-300 text-lg">
                   HTML & CSS Content
                 </Label>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowPromptDialog(true)}
-                    className="text-[#FF6C37] border-[#FF6C37]"
-                  >
-                    <Wand2 className="w-4 h-4 mr-2" />
-                    Generate
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowPreviewDialog(true)}
-                    className="text-[#FF6C37] border-[#FF6C37]"
-                  >
-                    <Eye className="w-4 h-4 mr-2" />
-                    Preview
-                  </Button>
-                </div>
               </div>
-              <div className="w-full flex-grow overflow-hidden relative">
-                <div className="absolute inset-0 overflow-auto scrollbar-hide">
+              <div className="w-full flex-1 overflow-hidden relative rounded-md">
+                <div className="absolute inset-0">
                   <CodeMirror
                     value={formData.content}
                     height="100%"
+                    width="100%"
                     theme={vscodeDark}
                     extensions={[html()]}
                     onChange={(value) => setFormData({ ...formData, content: value })}
@@ -270,25 +282,15 @@ export function TemplateDialog({
                       lineNumbers: true,
                       highlightActiveLineGutter: true,
                       foldGutter: true,
+                      autocompletion: true,
+                      indentOnInput: true,
                     }}
+                    className="h-full"
                   />
                 </div>
               </div>
             </div>
           </div>
-          <DialogFooter className="mt-4">
-            <Button
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className="bg-[#FF6C37] hover:bg-[#FF6C37]/90 text-white font-semibold"
-            >
-              {isLoading
-                ? "Saving..."
-                : template
-                ? "Update Template"
-                : "Save Template"}
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 
@@ -302,6 +304,13 @@ export function TemplateDialog({
         open={showPreviewDialog}
         onOpenChange={setShowPreviewDialog}
         content={formData.content || ""}
+        name={formData.name || ""}
+        subject={formData.subject || ""}
+        from_name={formData.from_name || ""}
+        to_email={formData.to_email}
+        reply_to={formData.reply_to}
+        cc={formData.cc}
+        bcc={formData.bcc}
       />
     </>
   );
