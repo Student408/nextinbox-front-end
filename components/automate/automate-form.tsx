@@ -3,6 +3,7 @@ import { Template } from "@/types/templates"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { CsvUploader } from "@/components/automate/csv-uploader"
 
 interface AutomateFormProps {
   services: Service[]
@@ -14,6 +15,8 @@ interface AutomateFormProps {
   placeholders: string[]
   csvFields: string[]
   onFieldMapping: (placeholder: string, csvField: string) => void
+  onRemoveCsv: () => void
+  onCsvUpload: (data: Record<string, string>[]) => void
 }
 
 export function AutomateForm({
@@ -26,6 +29,8 @@ export function AutomateForm({
   placeholders,
   csvFields,
   onFieldMapping,
+  onRemoveCsv,
+  onCsvUpload,
 }: AutomateFormProps) {
   return (
     <Card>
@@ -87,6 +92,7 @@ export function AutomateForm({
             ))}
           </div>
         )}
+        <CsvUploader onUpload={onCsvUpload} onRemoveCsv={onRemoveCsv} />
       </CardContent>
     </Card>
   )

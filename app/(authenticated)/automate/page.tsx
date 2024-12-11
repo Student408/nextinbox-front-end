@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Workflow } from 'lucide-react'
 import { AutomateForm } from '@/components/automate/automate-form'
-import { CsvUploader } from '@/components/automate/csv-uploader'
 import { PreviewEmail } from '@/components/automate/preview-email'
 import { Service } from '@/types/services'
 import { Template } from '@/types/templates'
@@ -106,6 +105,11 @@ export default function AutomatePage() {
     }))
   }
 
+  const handleRemoveCsv = () => {
+    setCsvData([])
+    setPreviewData({})
+  }
+
   const handleSendEmails = async () => {
     if (!selectedService || !selectedTemplate || !csvData.length) {
       toast.error('Please select a service, template, and upload CSV data')
@@ -194,8 +198,9 @@ export default function AutomatePage() {
                 placeholders={placeholders}
                 csvFields={csvData.length > 0 ? Object.keys(csvData[0]) : []}
                 onFieldMapping={handleFieldMapping}
+                onRemoveCsv={handleRemoveCsv}
+                onCsvUpload={handleCsvUpload}
               />
-              <CsvUploader onUpload={handleCsvUpload} />
             </div>
           </div>
           <div className="relative">
