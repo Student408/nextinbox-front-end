@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CsvUploader } from "@/components/automate/csv-uploader"
+import { Badge } from "@/components/ui/badge"
 
 interface AutomateFormProps {
   services: Service[]
@@ -14,6 +15,7 @@ interface AutomateFormProps {
   onTemplateChange: (templateId: string) => void
   placeholders: string[]
   csvFields: string[]
+  fieldMappings: Record<string, string>
   onFieldMapping: (placeholder: string, csvField: string) => void
   onRemoveCsv: () => void
   onCsvUpload: (data: Record<string, string>[]) => void
@@ -28,6 +30,7 @@ export function AutomateForm({
   onTemplateChange,
   placeholders,
   csvFields,
+  fieldMappings,
   onFieldMapping,
   onRemoveCsv,
   onCsvUpload,
@@ -75,8 +78,18 @@ export function AutomateForm({
             <Label>Map Template Fields</Label>
             {placeholders.map((placeholder) => (
               <div key={placeholder} className="space-y-2">
-                <Label>{placeholder}</Label>
-                <Select onValueChange={(value) => onFieldMapping(placeholder, value)}>
+                <div className="flex items-center justify-between">
+                  <Label>{placeholder}</Label>
+                  {fieldMappings[placeholder] && (
+                    <Badge variant="outline" className="text-[#FF6C37] border-[#FF6C37]">
+                      Auto-mapped
+                    </Badge>
+                  )}
+                </div>
+                <Select 
+                  value={fieldMappings[placeholder] || ''} 
+                  onValueChange={(value) => onFieldMapping(placeholder, value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder={`Select field for ${placeholder}`} />
                   </SelectTrigger>

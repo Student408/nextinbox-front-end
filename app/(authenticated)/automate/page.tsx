@@ -10,6 +10,7 @@ import { Template } from '@/types/templates'
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'sonner'
 import { extractPlaceholders } from '@/lib/utils/template'
+import { findMatchingFields } from '@/lib/utils/field-mapping'
 
 const API_URL = process.env.NEXT_PUBLIC_NEXTINBOX_API_URL as string
 
@@ -83,7 +84,15 @@ export default function AutomatePage() {
     if (template) {
       const extractedPlaceholders = extractPlaceholders(template.content)
       setPlaceholders(extractedPlaceholders)
-      setFieldMappings({})
+      
+      // Auto-map fields if CSV data exists
+      if (csvData.length > 0) {
+        const csvFields = Object.keys(csvData[0])
+        const autoMappings = findMatchingFields(extractedPlaceholders, csvFields)
+        setFieldMappings(autoMappings)
+      } else {
+        setFieldMappings({})
+      }
     }
   }
 
@@ -95,6 +104,13 @@ export default function AutomatePage() {
           Object.entries(data[0]).map(([key, value]) => [key, value.toString()])
         )
       )
+      
+      // Auto-map fields if template is already selected
+      if (placeholders.length > 0) {
+        const csvFields = Object.keys(data[0])
+        const autoMappings = findMatchingFields(placeholders, csvFields)
+        setFieldMappings(autoMappings)
+      }
     }
   }
 
@@ -108,6 +124,7 @@ export default function AutomatePage() {
   const handleRemoveCsv = () => {
     setCsvData([])
     setPreviewData({})
+    setFieldMappings({})
   }
 
   const handleSendEmails = async () => {
@@ -197,6 +214,7 @@ export default function AutomatePage() {
                 onTemplateChange={handleTemplateChange}
                 placeholders={placeholders}
                 csvFields={csvData.length > 0 ? Object.keys(csvData[0]) : []}
+                fieldMappings={fieldMappings}
                 onFieldMapping={handleFieldMapping}
                 onRemoveCsv={handleRemoveCsv}
                 onCsvUpload={handleCsvUpload}
