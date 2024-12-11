@@ -1,78 +1,72 @@
-import { Template } from "@/types/templates";
+import { supabase } from '@/lib/supabase'
 
-export interface EmailRecipient {
-  email_address: string;
-  name: string;
-  [key: string]: string;
+const API_URL = process.env.NEXT_PUBLIC_NEXTINBOX_API_URL as string
+const BATCH_SIZE = 5 // Process 50 emails at a time
+
+interface EmailRequest {
+  email_address: string
+  name: string
+  parameters: Record<string, string>
 }
 
-export interface EmailParameters {
-  [key: string]: string;
-}
+export async function sendEmails({
+  serviceId,
+  templateId,
+  recipients,
+  onProgress,
+}: {
+  serviceId: string
+  templateId: string
+  recipients: EmailRequest[]
+  onProgress: (progress: number) => void
+}): Promise<void> {
+  // Get user key
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('User not authenticated')
 
-export interface EmailRequest {
-  user_key: string;
-  service_id: string;
-  template_id: string;
-  recipients: EmailRecipient[];
-  parameters: EmailParameters;
-}
+  const { data: profileData, error: profileError } = await supabase
+    .from('profile')
+    .select('user_key')
+    .eq('user_id', user.id)
+    .single()
 
-export function createEmailRequest(
-  userKey: string,
-  serviceId: string,
-  templateId: string,
-  csvData: Record<string, string | number>[],
-  fieldMappings: Record<string, string>,
-  template: Template | undefined
-): EmailRequest {
-  if (!template) {
-    throw new Error("Template not found");
+  if (profileError) throw profileError
+  const userKey = profileData.user_key
+
+  // Process in batches
+  const batches = []
+  for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
+    batches.push(recipients.slice(i, i + BATCH_SIZE))
   }
 
-  // Create recipients with their individual parameters
-  const recipients = csvData.map(row => {
-    const recipientData: EmailRecipient = {
-      email_address: getEmailFromRow(row),
-      name: getNameFromRow(row)
-    };
+  let processedCount = 0
+  for (const batch of batches) {
+    try {
+      const response = await fetch(`${API_URL}/send-emails`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_key: userKey,
+          service_id: serviceId,
+          template_id: templateId,
+          recipients: batch
+        })
+      })
 
-    return recipientData;
-  });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
 
-  // Create parameters object with all mapped fields
-  const parameters: EmailParameters = {};
-  Object.entries(fieldMappings).forEach(([placeholder, csvField]) => {
-    if (csvData[0][csvField] !== undefined) {
-      parameters[placeholder] = csvData[0][csvField].toString();
-    }
-  });
+      processedCount += batch.length
+      onProgress((processedCount / recipients.length) * 100)
 
-  return {
-    user_key: userKey,
-    service_id: serviceId,
-    template_id: templateId,
-    recipients,
-    parameters
-  };
-}
-
-function getEmailFromRow(row: Record<string, string | number>): string {
-  const emailFields = ['email', 'email_address', 'Email', 'EMAIL'];
-  for (const field of emailFields) {
-    if (row[field]) {
-      return row[field].toString();
+      // Add a small delay between batches to prevent rate limiting
+      await new Promise(resolve => setTimeout(resolve, 1000))
+    } catch (error) {
+      console.error('Error sending batch:', error)
+      throw error
     }
   }
-  return '';
-}
-
-function getNameFromRow(row: Record<string, string | number>): string {
-  const nameFields = ['name', 'Name', 'NAME', 'full_name', 'recipient_name'];
-  for (const field of nameFields) {
-    if (row[field]) {
-      return row[field].toString();
-    }
-  }
-  return 'Recipient';
 }

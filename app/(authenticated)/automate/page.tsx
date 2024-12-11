@@ -1,226 +1,336 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
-import { Workflow } from 'lucide-react'
-import { AutomateForm } from '@/components/automate/automate-form'
-import { PreviewEmail } from '@/components/automate/preview-email'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Workflow, Upload,  Send, Trash2, Eye } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
+import { toast } from 'sonner'
 import { Service } from '@/types/services'
 import { Template } from '@/types/templates'
-import { Skeleton } from '@/components/ui/skeleton'
-import { toast } from 'sonner'
-import { extractPlaceholders } from '@/lib/utils/template'
-import { findMatchingFields } from '@/lib/utils/field-mapping'
-import { createEmailRequest } from '@/lib/utils/email'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+// import DOMPurify from 'dompurify'
+import { parseCsvFile } from '@/lib/utils/csv'
+import { extractTemplateFields, generatePreview } from '@/lib/utils/template'
+import { sendEmails } from '@/lib/utils/email'
+import { ProgressDialog } from '@/components/automate/progress-dialog'
 
-const API_URL = process.env.NEXT_PUBLIC_NEXTINBOX_API_URL as string
+// const API_URL = process.env.NEXT_PUBLIC_NEXTINBOX_API_URL as string
 
 export default function AutomatePage() {
   const [services, setServices] = useState<Service[]>([])
   const [templates, setTemplates] = useState<Template[]>([])
-  const [loading, setLoading] = useState(true)
-  const [userKey, setUserKey] = useState<string>('')
-  const [csvData, setCsvData] = useState<Record<string, string | number>[]>([])
   const [selectedService, setSelectedService] = useState<string>('')
   const [selectedTemplate, setSelectedTemplate] = useState<string>('')
-  const [placeholders, setPlaceholders] = useState<string[]>([])
-  const [fieldMappings, setFieldMappings] = useState<Record<string, string>>({})
-  const [previewData, setPreviewData] = useState<Record<string, string>>({})
+  const [csvFile, setCsvFile] = useState<File | null>(null)
+  const [csvHeaders, setCsvHeaders] = useState<string[]>([])
+  const [csvData, setCsvData] = useState<Record<string, string>[]>([])
+  const [templateFields, setTemplateFields] = useState<string[]>([])
+  const [fieldMapping, setFieldMapping] = useState<Record<string, string>>({})
+  const [previewHtml] = useState<string>('')
+  const [showPreview, setShowPreview] = useState(false)
+  const [isLoading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [sendProgress, setSendProgress] = useState(0)
+  const [processedCount, setProcessedCount] = useState(0)
+  const [isSending, setIsSending] = useState(false)
 
   useEffect(() => {
     fetchServicesAndTemplates()
-    fetchUserKey()
   }, [])
 
   async function fetchServicesAndTemplates() {
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      
-      if (!user) {
-        console.error('No user found')
-        return
-      }
+      const { data: servicesData, error: servicesError } = await supabase
+        .from('services')
+        .select('*')
 
-      const [servicesResponse, templatesResponse] = await Promise.all([
-        supabase.from('services').select('*').eq('user_id', user.id),
-        supabase.from('templates').select('*').eq('user_id', user.id)
-      ])
+      if (servicesError) throw servicesError
+      setServices(servicesData)
 
-      if (servicesResponse.error) throw servicesResponse.error
-      if (templatesResponse.error) throw templatesResponse.error
+      const { data: templatesData, error: templatesError } = await supabase
+        .from('templates')
+        .select('*')
 
-      setServices(servicesResponse.data || [])
-      setTemplates(templatesResponse.data || [])
+      if (templatesError) throw templatesError
+      setTemplates(templatesData)
     } catch (error) {
       console.error('Error fetching data:', error)
       toast.error('Failed to fetch services and templates')
-    } finally {
-      setLoading(false)
     }
   }
 
-  async function fetchUserKey() {
-    try {
-      const { data: { user } } = await supabase.auth.getUser()
-      
-      if (!user) return
-
-      const { data, error } = await supabase
-        .from('profile')
-        .select('user_key')
-        .eq('user_id', user.id)
-        .single()
-
-      if (error) throw error
-      if (data) setUserKey(data.user_key)
-    } catch (error) {
-      console.error('Error fetching user key:', error)
-      toast.error('Failed to fetch API key')
-    }
-  }
-
-  const handleTemplateChange = (templateId: string) => {
+  async function handleTemplateChange(templateId: string) {
     setSelectedTemplate(templateId)
     const template = templates.find(t => t.template_id === templateId)
     if (template) {
-      const extractedPlaceholders = extractPlaceholders(template.content)
-      setPlaceholders(extractedPlaceholders)
+      const fields = extractTemplateFields(template.content)
+      setTemplateFields(fields)
       
+      // Initialize field mapping with email_address and name
+      const initialMapping: Record<string, string> = {}
+      fields.forEach(field => {
+        if (csvHeaders.includes(field)) {
+          initialMapping[field] = field
+        }
+      })
+      setFieldMapping(initialMapping)
+
+      // Generate preview with first row of CSV data if available
       if (csvData.length > 0) {
-        const csvFields = Object.keys(csvData[0])
-        const autoMappings = findMatchingFields(extractedPlaceholders, csvFields)
-        setFieldMappings(autoMappings)
-      } else {
-        setFieldMappings({})
+        generatePreview(template.content, csvData[0], fieldMapping)
       }
     }
   }
 
-  const handleCsvUpload = (data: Record<string, string | number>[]) => {
-    setCsvData(data)
-    if (data.length > 0) {
-      setPreviewData(
-        Object.fromEntries(
-          Object.entries(data[0]).map(([key, value]) => [key, value.toString()])
-        )
-      )
-      
-      if (placeholders.length > 0) {
-        const csvFields = Object.keys(data[0])
-        const autoMappings = findMatchingFields(placeholders, csvFields)
-        setFieldMappings(autoMappings)
-      }
+  async function handleCsvUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    try {
+      setCsvFile(file)
+      const { headers, data } = await parseCsvFile(file)
+      setCsvHeaders(headers)
+      setCsvData(data)
+
+      // Reset field mapping
+      const newMapping: Record<string, string> = {}
+      templateFields.forEach(field => {
+        if (headers.includes(field)) {
+          newMapping[field] = field
+        }
+      })
+      setFieldMapping(newMapping)
+    } catch (error) {
+      console.error('Error parsing CSV:', error)
+      toast.error('Failed to parse CSV file')
     }
   }
 
-  const handleFieldMapping = (placeholder: string, csvField: string) => {
-    setFieldMappings(prev => ({
-      ...prev,
-      [placeholder]: csvField
-    }))
-  }
-
-  const handleRemoveCsv = () => {
-    setCsvData([])
-    setPreviewData({})
-    setFieldMappings({})
-  }
-
-  const handleSendEmails = async () => {
-    if (!selectedService || !selectedTemplate || !csvData.length) {
-      toast.error('Please select a service, template, and upload CSV data')
+  async function handleSendEmails() {
+    if (!selectedService || !selectedTemplate || !csvFile) {
+      toast.error('Please select a service, template, and CSV file')
       return
     }
 
-    const template = templates.find(t => t.template_id === selectedTemplate)
-    
     try {
-      const emailRequest = createEmailRequest(
-        userKey,
-        selectedService,
-        selectedTemplate,
-        csvData,
-        fieldMappings,
-        template
-      );
+      setIsSending(true)
+      setSendProgress(0)
+      setProcessedCount(0)
 
-      const response = await fetch(`${API_URL}/send-emails`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(emailRequest),
+      const recipients = csvData.map(row => ({
+        email_address: row.email_address,
+        name: row.name || '',
+        parameters: Object.entries(fieldMapping).reduce((acc, [templateField, csvField]) => {
+          acc[templateField] = row[csvField] || ''
+          return acc
+        }, {} as Record<string, string>)
+      }))
+
+      await sendEmails({
+        serviceId: selectedService,
+        templateId: selectedTemplate,
+        recipients,
+        onProgress: (progress) => {
+          setSendProgress(progress)
+          setProcessedCount(Math.floor((progress / 100) * recipients.length))
+        }
       })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Failed to send emails')
-      }
-
-      const data = await response.json()
-      if (data.success) {
-        toast.success(`Successfully sent emails to ${emailRequest.recipients.length} recipients`)
-      } else {
-        throw new Error(data.message || 'Failed to send emails')
-      }
+      toast.success('All emails sent successfully!')
     } catch (error) {
       console.error('Error sending emails:', error)
-      toast.error(error instanceof Error ? error.message : 'Failed to send emails')
+      toast.error('Failed to send emails')
+    } finally {
+      setIsSending(false)
+      setSendProgress(0)
+      setProcessedCount(0)
     }
   }
 
-  if (loading) {
-    return (
-      <div className="h-full">
-        <div className="flex items-center h-14 px-6 border-b">
-          <Workflow className="mr-2 text-[#FF6C37]" />
-          <h2 className="text-2xl font-bold text-[#FF6C37]">Email Automation</h2>
-        </div>
-        <div className="p-6">
-          <Skeleton className="h-[400px] w-full" />
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center h-14 px-6 border-b flex-shrink-0">
-        <Workflow className="mr-2 text-[#FF6C37]" />
-        <h2 className="text-2xl font-bold text-[#FF6C37]">Email Automation</h2>
-      </div>
-      <div className="flex-1 overflow-auto p-6">
-        <div className="grid gap-6 md:grid-cols-2 max-w-7xl mx-auto">
-          <div className="space-y-6">
-            <div className="sticky top-0 space-y-6">
-              <AutomateForm
-                services={services}
-                templates={templates}
-                selectedService={selectedService}
-                selectedTemplate={selectedTemplate}
-                onServiceChange={setSelectedService}
-                onTemplateChange={handleTemplateChange}
-                placeholders={placeholders}
-                csvFields={csvData.length > 0 ? Object.keys(csvData[0]) : []}
-                fieldMappings={fieldMappings}
-                onFieldMapping={handleFieldMapping}
-                onRemoveCsv={handleRemoveCsv}
-                onCsvUpload={handleCsvUpload}
+    <>
+      <div className="container mx-auto px-6 py-4">
+        <h2 className="text-2xl font-bold flex items-center text-[#FF6C37] mb-6">
+          <Workflow className="mr-2" /> Email Automation
+        </h2>
+
+        <div className="grid gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Service & Template Selection</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Email Service</label>
+                  <Select value={selectedService} onValueChange={setSelectedService}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a service" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {services.map((service) => (
+                        <SelectItem key={service.service_id} value={service.service_id}>
+                          {service.email_id}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Email Template</label>
+                  <Select value={selectedTemplate} onValueChange={handleTemplateChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a template" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {templates.map((template) => (
+                        <SelectItem key={template.template_id} value={template.template_id}>
+                          {template.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>CSV Upload</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-4">
+                <Button
+                  onClick={() => fileInputRef.current?.click()}
+                  variant="outline"
+                  className="w-full md:w-auto"
+                >
+                  <Upload className="mr-2 h-4 w-4" />
+                  {csvFile ? 'Replace CSV' : 'Upload CSV'}
+                </Button>
+                {csvFile && (
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setCsvFile(null)
+                        setCsvHeaders([])
+                        setCsvData([])
+                        if (fileInputRef.current) {
+                          fileInputRef.current.value = ''
+                        }
+                      }}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Remove
+                    </Button>
+                    <span className="text-sm text-muted-foreground">
+                      {csvFile.name}
+                    </span>
+                  </>
+                )}
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".csv"
+                onChange={handleCsvUpload}
+                className="hidden"
+                title="Upload CSV file"
               />
-            </div>
-          </div>
-          <div className="relative">
-            <div className="sticky top-0">
-              <PreviewEmail
-                template={templates.find(t => t.template_id === selectedTemplate)}
-                previewData={previewData}
-                fieldMappings={fieldMappings}
-                onSendEmails={handleSendEmails}
-              />
-            </div>
-          </div>
+
+              {templateFields.length > 0 && csvHeaders.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="text-lg font-semibold mb-4">Field Mapping</h3>
+                  <div className="grid gap-4">
+                    {templateFields.map((field) => (
+                      <div key={field} className="grid grid-cols-2 gap-4 items-center">
+                        <span className="text-sm font-medium">{field}</span>
+                        <Select
+                          value={fieldMapping[field] || ''}
+                          onValueChange={(value) => {
+                            setFieldMapping(prev => ({
+                              ...prev,
+                              [field]: value
+                            }))
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select CSV field" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {csvHeaders.map((header) => (
+                              <SelectItem key={header} value={header}>
+                                {header}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {csvFile && selectedTemplate && Object.keys(fieldMapping).length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-x-4">
+                <Button
+                  onClick={() => {
+                    const template = templates.find(t => t.template_id === selectedTemplate)
+                    if (template && csvData.length > 0) {
+                      generatePreview(template.content, csvData[0], fieldMapping)
+                      setShowPreview(true)
+                    }
+                  }}
+                  variant="outline"
+                >
+                  <Eye className="mr-2 h-4 w-4" />
+                  Preview
+                </Button>
+                <Button
+                  onClick={handleSendEmails}
+                  disabled={isLoading}
+                  className="bg-[#FF6C37] hover:bg-[#FF6C37]/90"
+                >
+                  <Send className="mr-2 h-4 w-4" />
+                  {isLoading ? 'Sending...' : 'Send Emails'}
+                </Button>
+              </CardContent>
+            </Card>
+          )}
         </div>
+
+        <Dialog open={showPreview} onOpenChange={setShowPreview}>
+          <DialogContent className="max-w-4xl h-[80vh]">
+            <DialogHeader>
+              <DialogTitle>Email Preview</DialogTitle>
+            </DialogHeader>
+            <div className="flex-1 overflow-auto mt-4">
+              <iframe
+                srcDoc={previewHtml}
+                className="w-full h-full border rounded-md"
+                title="Email Preview"
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
-    </div>
+      <ProgressDialog
+        open={isSending}
+        progress={sendProgress}
+        total={csvData.length}
+        processed={processedCount}
+      />
+    </>
   )
 }

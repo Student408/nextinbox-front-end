@@ -8,6 +8,9 @@ import { toast } from "@/components/ui/use-toast";
 import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
+import { Eye, Wand2 } from "lucide-react";
+import { PromptDialog } from "./prompt-dialog";
+import { PreviewDialog } from "./preview-dialog";
 
 interface Template {
   template_id: string;
@@ -45,6 +48,8 @@ export function TemplateDialog({
     bcc: "",
     cc: "",
   });
+  const [showPromptDialog, setShowPromptDialog] = useState(false);
+  const [showPreviewDialog, setShowPreviewDialog] = useState(false);
 
   useEffect(() => {
     if (template) {
@@ -136,123 +141,168 @@ export function TemplateDialog({
     }
   }
 
+  const handleGeneratedContent = (content: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      content,
+    }));
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[90vw] w-[95vw] max-h-[90vh]">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-            {template ? "Edit Email Template" : "Create Email Template"}
-          </DialogTitle>
-        </DialogHeader>
-        <div className="flex flex-col lg:flex-row h-[calc(90vh-180px)]">
-          <div className="lg:w-[30%] p-4 overflow-y-auto">
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">Template Name</Label>
-                <Input
-                  id="name"
-                  placeholder="e.g., Welcome Email"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
-                />
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-[90vw] w-[95vw] max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+              {template ? "Edit Email Template" : "Create Email Template"}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col lg:flex-row h-[calc(90vh-180px)]">
+            <div className="lg:w-[30%] p-4 overflow-y-auto">
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">Template Name</Label>
+                  <Input
+                    id="name"
+                    placeholder="e.g., Welcome Email"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="subject" className="text-gray-700 dark:text-gray-300">Subject</Label>
+                  <Input
+                    id="subject"
+                    placeholder="Email subject"
+                    value={formData.subject}
+                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                    className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="from_name" className="text-gray-700 dark:text-gray-300">From Name</Label>
+                  <Input
+                    id="from_name"
+                    placeholder="Sender's name"
+                    value={formData.from_name}
+                    onChange={(e) => setFormData({ ...formData, from_name: e.target.value })}
+                    className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="to_email" className="text-gray-700 dark:text-gray-300">To Email (optional)</Label>
+                  <Input
+                    id="to_email"
+                    placeholder="Recipient's email"
+                    value={formData.to_email || ""}
+                    onChange={(e) => setFormData({ ...formData, to_email: e.target.value })}
+                    className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="reply_to" className="text-gray-700 dark:text-gray-300">Reply-To (optional)</Label>
+                  <Input
+                    id="reply_to"
+                    placeholder="Reply-to email"
+                    value={formData.reply_to || ""}
+                    onChange={(e) => setFormData({ ...formData, reply_to: e.target.value })}
+                    className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="cc" className="text-gray-700 dark:text-gray-300">CC (optional)</Label>
+                  <Input
+                    id="cc"
+                    placeholder="CC email addresses"
+                    value={formData.cc || ""}
+                    onChange={(e) => setFormData({ ...formData, cc: e.target.value })}
+                    className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="bcc" className="text-gray-700 dark:text-gray-300">BCC (optional)</Label>
+                  <Input
+                    id="bcc"
+                    placeholder="BCC email addresses"
+                    value={formData.bcc || ""}
+                    onChange={(e) => setFormData({ ...formData, bcc: e.target.value })}
+                    className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
+                  />
+                </div>
               </div>
-              <div>
-                <Label htmlFor="subject" className="text-gray-700 dark:text-gray-300">Subject</Label>
-                <Input
-                  id="subject"
-                  placeholder="Email subject"
-                  value={formData.subject}
-                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
-                />
+            </div>
+            <div className="lg:w-[70%] h-full p-4 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+              <div className="flex items-center justify-between mb-2">
+                <Label htmlFor="content" className="text-gray-700 dark:text-gray-300">
+                  HTML & CSS Content
+                </Label>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowPromptDialog(true)}
+                    className="text-[#FF6C37] border-[#FF6C37]"
+                  >
+                    <Wand2 className="w-4 h-4 mr-2" />
+                    Generate
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowPreviewDialog(true)}
+                    className="text-[#FF6C37] border-[#FF6C37]"
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    Preview
+                  </Button>
+                </div>
               </div>
-              <div>
-                <Label htmlFor="from_name" className="text-gray-700 dark:text-gray-300">From Name</Label>
-                <Input
-                  id="from_name"
-                  placeholder="Sender's name"
-                  value={formData.from_name}
-                  onChange={(e) => setFormData({ ...formData, from_name: e.target.value })}
-                  className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
-                />
-              </div>
-              <div>
-                <Label htmlFor="to_email" className="text-gray-700 dark:text-gray-300">To Email (optional)</Label>
-                <Input
-                  id="to_email"
-                  placeholder="Recipient's email"
-                  value={formData.to_email || ""}
-                  onChange={(e) => setFormData({ ...formData, to_email: e.target.value })}
-                  className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
-                />
-              </div>
-              <div>
-                <Label htmlFor="reply_to" className="text-gray-700 dark:text-gray-300">Reply-To (optional)</Label>
-                <Input
-                  id="reply_to"
-                  placeholder="Reply-to email"
-                  value={formData.reply_to || ""}
-                  onChange={(e) => setFormData({ ...formData, reply_to: e.target.value })}
-                  className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
-                />
-              </div>
-              <div>
-                <Label htmlFor="cc" className="text-gray-700 dark:text-gray-300">CC (optional)</Label>
-                <Input
-                  id="cc"
-                  placeholder="CC email addresses"
-                  value={formData.cc || ""}
-                  onChange={(e) => setFormData({ ...formData, cc: e.target.value })}
-                  className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
-                />
-              </div>
-              <div>
-                <Label htmlFor="bcc" className="text-gray-700 dark:text-gray-300">BCC (optional)</Label>
-                <Input
-                  id="bcc"
-                  placeholder="BCC email addresses"
-                  value={formData.bcc || ""}
-                  onChange={(e) => setFormData({ ...formData, bcc: e.target.value })}
-                  className="mt-1 border-[#FF6C37]/30 focus:border-[#FF6C37] focus:ring-[#FF6C37]/20 dark:bg-background dark:border-[#FF6C37]/50 dark:text-gray-100"
-                />
+              <div className="w-full flex-grow overflow-hidden relative">
+                <div className="absolute inset-0 overflow-auto scrollbar-hide">
+                  <CodeMirror
+                    value={formData.content}
+                    height="100%"
+                    theme={vscodeDark}
+                    extensions={[html()]}
+                    onChange={(value) => setFormData({ ...formData, content: value })}
+                    basicSetup={{
+                      lineNumbers: true,
+                      highlightActiveLineGutter: true,
+                      foldGutter: true,
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
-          <div className="lg:w-[70%] h-full p-4 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
-            <Label htmlFor="content" className="text-gray-700 dark:text-gray-300 mb-2 block">HTML & CSS Content</Label>
-            <div className="w-full flex-grow overflow-hidden relative">
-              <div className="absolute inset-0 overflow-auto scrollbar-hide">
-                <CodeMirror
-                  value={formData.content}
-                  height="100%"
-                  theme={vscodeDark}
-                  extensions={[html()]}
-                  onChange={(value) => setFormData({ ...formData, content: value })}
-                  basicSetup={{
-                    lineNumbers: true,
-                    highlightActiveLineGutter: true,
-                    foldGutter: true,
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <DialogFooter className="mt-4">
-          <Button
-            onClick={handleSubmit}
-            disabled={isLoading}
-            className="bg-[#FF6C37] hover:bg-[#FF6C37]/90 text-white font-semibold"
-          >
-            {isLoading
-              ? "Saving..."
-              : template
-              ? "Update Template"
-              : "Save Template"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter className="mt-4">
+            <Button
+              onClick={handleSubmit}
+              disabled={isLoading}
+              className="bg-[#FF6C37] hover:bg-[#FF6C37]/90 text-white font-semibold"
+            >
+              {isLoading
+                ? "Saving..."
+                : template
+                ? "Update Template"
+                : "Save Template"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <PromptDialog
+        open={showPromptDialog}
+        onOpenChange={setShowPromptDialog}
+        onGenerated={handleGeneratedContent}
+      />
+
+      <PreviewDialog
+        open={showPreviewDialog}
+        onOpenChange={setShowPreviewDialog}
+        content={formData.content || ""}
+      />
+    </>
   );
 }
