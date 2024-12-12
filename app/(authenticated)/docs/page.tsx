@@ -5,6 +5,10 @@ import { Card, CardContent } from '@/components/ui/card'
 import { FileText, Code, Server, Mail, Key, Workflow, Shield } from 'lucide-react'
 import { GettingStartedDocs } from '@/components/docs/getting-started'
 import { TemplatesDocs } from '@/components/docs/templates'
+import { EmailServicesDocs } from '@/components/docs/email-services'
+import { APIKeysDocs } from '@/components/docs/api-keys'
+import { AutomationDocs } from '@/components/docs/automation'
+import { SecurityDocs } from '@/components/docs/security'
 
 export default function DocsPage() {
   const [activeTab, setActiveTab] = useState('getting-started')
@@ -15,7 +19,14 @@ export default function DocsPage() {
         return <GettingStartedDocs />
       case 'templates':
         return <TemplatesDocs />
-      // Add other tab components here
+      case 'services':
+        return <EmailServicesDocs />
+      case 'api-keys':
+        return <APIKeysDocs />
+      case 'automation':
+        return <AutomationDocs />
+      case 'security':
+        return <SecurityDocs />
       default:
         return <GettingStartedDocs />
     }
