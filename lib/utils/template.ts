@@ -4,6 +4,12 @@ export function extractTemplateFields(content: string): string[] {
   return matches.map(match => match.replace(/[{}]/g, '').trim())
 }
 
+export function extractFieldsFromTemplate(content: string): string[] {
+  const regex = /{{(.*?)}}/g;
+  const matches = content.match(regex) || [];
+  return matches.map(match => match.replace(/[{}]/g, '').trim());
+}
+
 export function generatePreview(
   templateContent: string,
   data: Record<string, string>,
