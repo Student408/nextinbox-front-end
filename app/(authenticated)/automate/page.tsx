@@ -85,7 +85,7 @@ export default function AutomatePage() {
       </h2>
 
       <div className="grid gap-6">
-        <Card className="w-full max-w-full md:max-w-3xl mx-auto">
+        <Card className="w-full max-w-full md:max-w-5xl mx-auto">
           <CardHeader>
             <CardTitle>Generate API Code</CardTitle>
           </CardHeader>

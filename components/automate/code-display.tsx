@@ -27,7 +27,7 @@ export function CodeDisplay({ code }: CodeDisplayProps) {
   }
 
   return (
-    <Card className="w-full max-w-full md:max-w-3xl mx-auto">
+    <Card className="w-full max-w-full lg:max-w-5xl mx-auto">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Generated Code</CardTitle>
         <Button
