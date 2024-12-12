@@ -130,6 +130,83 @@ export function TemplatesDocs() {
               </pre>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <h4 className="font-semibold mb-2">Newsletter Template</h4>
+              <pre className="bg-muted p-4 rounded-md text-sm overflow-x-auto">
+{`<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .container { max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; }
+    .header { background: #333; color: white; padding: 20px; text-align: center; }
+    .content { padding: 20px; }
+    .footer { background: #f5f5f5; padding: 10px; text-align: center; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Monthly Newsletter</h1>
+    </div>
+    <div class="content">
+      <h2>Latest Updates</h2>
+      <p>Stay updated with the latest news and updates from our company.</p>
+      <ul>
+        <li>Update 1</li>
+        <li>Update 2</li>
+        <li>Update 3</li>
+      </ul>
+    </div>
+    <div class="footer">
+      <p>&copy; {{year}} {{company_name}}. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>`}
+              </pre>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4">
+              <h4 className="font-semibold mb-2">Event Invitation Template</h4>
+              <pre className="bg-muted p-4 rounded-md text-sm overflow-x-auto">
+{`<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .container { max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; }
+    .header { background: #FF6C37; color: white; padding: 20px; text-align: center; }
+    .content { padding: 20px; }
+    .button { background: #FF6C37; color: white; padding: 10px 20px; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>You're Invited!</h1>
+    </div>
+    <div class="content">
+      <h2>Hello {{name}},</h2>
+      <p>We are excited to invite you to our upcoming event.</p>
+      <p>Event Details:</p>
+      <ul>
+        <li>Date: {{event_date}}</li>
+        <li>Time: {{event_time}}</li>
+        <li>Location: {{event_location}}</li>
+      </ul>
+      <p style="text-align: center;">
+        <a href="{{rsvp_link}}" class="button">RSVP Now</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>`}
+              </pre>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
