@@ -14,7 +14,7 @@ interface PromptDialogProps {
   onGenerated: (content: string) => void;
 }
 
-const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+const API_KEY = process.env.GEMINI_API_KEY;
 
 export function PromptDialog({ open, onOpenChange, onGenerated }: PromptDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
