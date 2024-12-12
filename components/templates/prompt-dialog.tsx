@@ -14,7 +14,7 @@ interface PromptDialogProps {
   onGenerated: (content: string) => void;
 }
 
-const API_KEY = process.env.NEXT_PRIVATE_GEMINI_API_KEY;
+const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 
 export function PromptDialog({ open, onOpenChange, onGenerated }: PromptDialogProps) {
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +40,7 @@ export function PromptDialog({ open, onOpenChange, onGenerated }: PromptDialogPr
       }
 
       const genAI = new GoogleGenerativeAI(API_KEY);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
       const fullPrompt = `Generate a responsive HTML email template with the following requirements:
         Content: ${prompt}
