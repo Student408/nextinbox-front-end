@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 
 export function TemplatesDocs() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <section className="space-y-4">
         <h2 className="text-2xl font-bold">Email Templates</h2>
         <p className="text-muted-foreground">
@@ -14,11 +14,11 @@ export function TemplatesDocs() {
 
       <section className="space-y-4">
         <h3 className="text-xl font-semibold">Template Examples</h3>
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <Card>
-            <CardContent className="p-4">
+            <CardContent className="p-3 sm:p-4">
               <h4 className="font-semibold mb-2">Welcome Email Template</h4>
-              <pre className="bg-muted p-4 rounded-md text-sm overflow-x-auto">
+              <pre className="bg-muted p-2 sm:p-4 rounded-md text-xs sm:text-sm overflow-x-auto">
 {`<!DOCTYPE html>
 <html>
 <head>
@@ -55,9 +55,9 @@ export function TemplatesDocs() {
           </Card>
 
           <Card>
-            <CardContent className="p-4">
+            <CardContent className="p-3 sm:p-4">
               <h4 className="font-semibold mb-2">Order Confirmation Template</h4>
-              <pre className="bg-muted p-4 rounded-md text-sm overflow-x-auto">
+              <pre className="bg-muted p-2 sm:p-4 rounded-md text-xs sm:text-sm overflow-x-auto">
 {`<!DOCTYPE html>
 <html>
 <head>
@@ -95,9 +95,9 @@ export function TemplatesDocs() {
           </Card>
 
           <Card>
-            <CardContent className="p-4">
+            <CardContent className="p-3 sm:p-4">
               <h4 className="font-semibold mb-2">Password Reset Template</h4>
-              <pre className="bg-muted p-4 rounded-md text-sm overflow-x-auto">
+              <pre className="bg-muted p-2 sm:p-4 rounded-md text-xs sm:text-sm overflow-x-auto">
 {`<!DOCTYPE html>
 <html>
 <head>
@@ -132,9 +132,9 @@ export function TemplatesDocs() {
           </Card>
 
           <Card>
-            <CardContent className="p-4">
+            <CardContent className="p-3 sm:p-4">
               <h4 className="font-semibold mb-2">Newsletter Template</h4>
-              <pre className="bg-muted p-4 rounded-md text-sm overflow-x-auto">
+              <pre className="bg-muted p-2 sm:p-4 rounded-md text-xs sm:text-sm overflow-x-auto">
 {`<!DOCTYPE html>
 <html>
 <head>
@@ -170,9 +170,9 @@ export function TemplatesDocs() {
           </Card>
 
           <Card>
-            <CardContent className="p-4">
+            <CardContent className="p-3 sm:p-4">
               <h4 className="font-semibold mb-2">Event Invitation Template</h4>
-              <pre className="bg-muted p-4 rounded-md text-sm overflow-x-auto">
+              <pre className="bg-muted p-2 sm:p-4 rounded-md text-xs sm:text-sm overflow-x-auto">
 {`<!DOCTYPE html>
 <html>
 <head>
@@ -212,11 +212,11 @@ export function TemplatesDocs() {
 
       <section className="space-y-4">
         <h3 className="text-xl font-semibold">Template Variables</h3>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Card>
-            <CardContent className="p-4">
+            <CardContent className="p-3 sm:p-4">
               <h4 className="font-semibold mb-2">Common Variables</h4>
-              <ul className="list-disc pl-4 text-sm space-y-2">
+              <ul className="list-disc pl-4 text-xs sm:text-sm space-y-2">
                 <li><code>{`{{name}}`}</code> - Recipient&apos;s name</li>
                 <li><code>{`{{email}}`}</code> - Recipient&apos;s email</li>
                 <li><code>{`{{company_name}}`}</code> - Your company name</li>
@@ -226,9 +226,9 @@ export function TemplatesDocs() {
           </Card>
 
           <Card>
-            <CardContent className="p-4">
+            <CardContent className="p-3 sm:p-4">
               <h4 className="font-semibold mb-2">Dynamic Content</h4>
-              <ul className="list-disc pl-4 text-sm space-y-2">
+              <ul className="list-disc pl-4 text-xs sm:text-sm space-y-2">
                 <li><code>{`{{#each items}}`}</code> - Loop through arrays</li>
                 <li><code>{`{{#if condition}}`}</code> - Conditional content</li>
                 <li><code>{`{{> partial}}`}</code> - Include partials</li>

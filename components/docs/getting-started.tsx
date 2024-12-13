@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 
 export function GettingStartedDocs() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <section className="space-y-4">
         <h2 className="text-2xl font-bold">Getting Started with NextInBox</h2>
         <p className="text-muted-foreground">
@@ -15,7 +15,7 @@ export function GettingStartedDocs() {
 
       <section className="space-y-4">
         <h3 className="text-xl font-semibold">Core Features</h3>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Card>
             <CardContent className="p-4">
               <h4 className="font-semibold mb-2">Email Service Management</h4>
@@ -131,7 +131,7 @@ export function GettingStartedDocs() {
 
       <section className="space-y-4">
         <h3 className="text-xl font-semibold">Common Use Cases</h3>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Card>
             <CardContent className="p-4">
               <h4 className="font-semibold mb-2">User Onboarding</h4>
