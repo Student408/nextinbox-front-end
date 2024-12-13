@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { ArrowRight, Mail, Zap, Shield, Code, FileText, Braces } from 'lucide-react'
+import { ArrowRight, Mail, Zap, Shield, Code, FileText, Braces, Check, ChevronRight, Copy, CheckCheck, Sparkles, Users, BarChart, MessageSquare, ShoppingBag, KeyRound, Mail as MailIcon } from 'lucide-react'
 
 export default function Home() {
   return (
@@ -127,98 +127,282 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CodeGen Details Section - Minimalistic */}
-        <section className="container mx-auto px-6 py-20 md:py-24 bg-gradient-to-b from-background to-muted/20">
-          <div className="max-w-4xl mx-auto">
-            <h3 className="text-3xl font-bold mb-12 text-center">Powerful Code Generation</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <Card className="p-6">
-                <h4 className="text-xl font-semibold mb-4 text-[#FF6C37]">Supported Languages</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center space-x-2">
-                    <Code className="h-5 w-5" />
-                    <span>Python</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Code className="h-5 w-5" />
-                    <span>JavaScript</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Code className="h-5 w-5" />
-                    <span>PHP</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Code className="h-5 w-5" />
-                    <span>Go</span>
+        {/* CodeGen Details Section - Enhanced */}
+        <section className="container mx-auto px-6 py-20 md:py-32 bg-gradient-to-b from-background to-muted/20">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16 space-y-4">
+              <h3 className="text-4xl md:text-5xl font-bold">Powerful Code Generation</h3>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Generate integration code automatically for your email templates in multiple programming languages.
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
+              {/* Languages Panel */}
+              <div className="lg:col-span-2 space-y-6">
+                <div className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 space-y-4">
+                  <h4 className="text-xl font-semibold text-[#FF6C37]">Supported Languages</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    {['Python', 'JavaScript', 'PHP', 'Go', 'Ruby', 'Java'].map((lang) => (
+                      <div key={lang} 
+                        className="flex items-center space-x-2 p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                        <Code className="h-5 w-5 text-[#FF6C37]" />
+                        <span className="font-medium">{lang}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </Card>
-              <Card className="p-6">
-                <h4 className="text-xl font-semibold mb-4 text-[#FF6C37]">Features</h4>
-                <ul className="space-y-3">
-                  <li className="flex items-start space-x-2">
-                    <Braces className="h-5 w-5 flex-shrink-0 mt-1" />
-                    <span>API-ready code snippets with error handling</span>
-                  </li>
-                  <li className="flex items-start space-x-2">
-                    <Braces className="h-5 w-5 flex-shrink-0 mt-1" />
-                    <span>Dynamic template variable support</span>
-                  </li>
-                  <li className="flex items-start space-x-2">
-                    <Braces className="h-5 w-5 flex-shrink-0 mt-1" />
-                    <span>Authentication and security best practices</span>
-                  </li>
-                  <li className="flex items-start space-x-2">
-                    <Braces className="h-5 w-5 flex-shrink-0 mt-1" />
-                    <span>Complete documentation and examples</span>
-                  </li>
-                </ul>
-              </Card>
+
+                <div className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl p-6">
+                  <h4 className="text-xl font-semibold text-[#FF6C37] mb-4">Key Features</h4>
+                  <ul className="space-y-3">
+                    {[
+                      'Type-safe code generation',
+                      'Error handling included',
+                      'Authentication built-in',
+                      'Rate limiting support',
+                      'Automatic retries',
+                      'Async/await support'
+                    ].map((feature) => (
+                      <li key={feature} className="flex items-center space-x-2">
+                        <Check className="h-5 w-5 text-[#FF6C37]" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* Code Preview */}
+              <div className="lg:col-span-3 bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl overflow-hidden">
+                <div className="flex items-center justify-between border-b border-border/50 p-4">
+                  <div className="flex items-center space-x-2">
+                    <div className="h-3 w-3 rounded-full bg-red-500" />
+                    <div className="h-3 w-3 rounded-full bg-yellow-500" />
+                    <div className="h-3 w-3 rounded-full bg-green-500" />
+                  </div>
+                  <span className="text-sm text-muted-foreground">example.py</span>
+                </div>
+                <pre className="p-4 text-sm overflow-x-auto">
+                  <code className="language-python">{`from nextinbox import NextInBox
+from nextinbox.templates import EmailTemplate
+
+# Initialize the client
+client = NextInBox(api_key="your_api_key")
+
+# Create email template
+template = EmailTemplate(
+    name="Welcome Email",
+    subject="Welcome to {{company}}!",
+    content="""
+    Hi {{name}},
+    Welcome to {{company}}! 
+    We're excited to have you on board.
+    """
+)
+
+# Send email using the template
+response = client.send_email(
+    template=template,
+    to="user@example.com",
+    variables={
+        "name": "John",
+        "company": "NextInBox"
+    }
+)
+
+print(f"Email sent: {response.message_id}")
+`}</code>
+                </pre>
+              </div>
+            </div>
+
+            <div className="mt-12 text-center">
+              <Link href="/docs" className="inline-flex items-center text-[#FF6C37] hover:text-[#FF6C37]/80 transition-colors">
+                <span className="font-medium">View Documentation</span>
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* Template Preview Section - Modernized */}
-        <section className="container mx-auto px-6 py-20 md:py-24">
-          <h3 className="text-3xl font-bold text-center mb-12">Professional Email Templates</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {['Welcome Emails', 'Order Confirmations', 'Password Reset', 'Newsletter'].map((template) => (
-              <Card key={template} className="p-6 hover:shadow-lg transition-shadow">
-                <h4 className="text-xl font-semibold mb-4">{template}</h4>
-                <div className="bg-muted rounded-lg p-4">
-                  <pre className="text-sm overflow-hidden">
-                    <code>{`<!DOCTYPE html>
-<html>
-<head>
-  <title>${template}</title>
-</head>
-<body>
-  <h1>{{title}}</h1>
-  <p>{{content}}</p>
-</body>
-</html>`}</code>
-                  </pre>
+        {/* Template Preview Section - Enhanced */}
+        <section className="container mx-auto px-6 py-20 md:py-32">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16 space-y-4">
+              <h3 className="text-4xl md:text-5xl font-bold">Professional Email Templates</h3>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Ready-to-use email templates for every business need. Customize and deploy in minutes.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {[
+                {
+                  title: 'Welcome Onboard',
+                  description: 'Perfect for new user signups and customer onboarding',
+                  variables: ['name', 'company', 'actionUrl'],
+                  icon: <MessageSquare className="h-6 w-6" />
+                },
+                {
+                  title: 'Order Confirmation',
+                  description: 'Automated order notifications with tracking details',
+                  variables: ['orderNumber', 'items', 'total', 'trackingUrl'],
+                  icon: <ShoppingBag className="h-6 w-6" />
+                },
+                {
+                  title: 'Password Reset',
+                  description: 'Secure password reset flow with time-limited tokens',
+                  variables: ['resetUrl', 'expiry', 'userEmail'],
+                  icon: <KeyRound className="h-6 w-6" />
+                },
+                {
+                  title: 'Newsletter',
+                  description: 'Engaging newsletter template with rich media support',
+                  variables: ['content', 'preferencesUrl', 'unsubscribeUrl'],
+                  icon: <MailIcon className="h-6 w-6" />
+                }
+              ].map((template) => (
+                <div key={template.title} 
+                  className="group relative bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300">
+                  <div className="absolute top-4 right-4 flex items-center gap-2">
+                    <button className="p-2 rounded-lg bg-background/50 hover:bg-background backdrop-blur-sm border border-border/50 transition-colors">
+                      <Copy className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                    <div className="p-2 rounded-lg bg-[#FF6C37]/10 text-[#FF6C37] text-sm font-medium">
+                      Preview
+                    </div>
+                  </div>
+                  
+                  <div className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 rounded-lg bg-[#FF6C37]/5 text-[#FF6C37]">
+                        {template.icon}
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-semibold mb-2">{template.title}</h4>
+                        <p className="text-sm text-muted-foreground mb-4">
+                          {template.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-6 pt-6 border-t border-border/50">
+                      <div className="text-sm font-medium mb-2">Template Variables</div>
+                      <div className="flex flex-wrap gap-2">
+                        {template.variables.map((variable) => (
+                          <span key={variable} 
+                            className="px-2 py-1 text-xs rounded-md bg-muted text-muted-foreground">
+                            {`{{${variable}}}`}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="px-6 py-4 bg-muted/50 flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">
+                      Last updated 2 days ago
+                    </span>
+                    <div className="flex items-center gap-1 text-sm text-[#FF6C37]">
+                      <CheckCheck className="h-4 w-4" />
+                      <span>Test Passed</span>
+                    </div>
+                  </div>
                 </div>
-              </Card>
-            ))}
+              ))}
+            </div>
+
+            <div className="mt-12 text-center">
+              <Link href="/templates" className="inline-flex items-center text-[#FF6C37] hover:text-[#FF6C37]/80 transition-colors">
+                <span className="font-medium">Browse All Templates</span>
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Link>
+            </div>
           </div>
         </section>
 
-        {/* CTA Section - Simplified */}
-        <section className="container mx-auto px-6 py-20 md:py-24 text-center bg-gradient-to-b from-muted/20 to-background">
-          <div className="max-w-3xl mx-auto space-y-6">
-            <h3 className="text-3xl font-bold mb-6">Ready to Get Started?</h3>
-            <p className="text-muted-foreground mb-8">
-              Join thousands of developers and businesses using NextInBox for their email management needs.
-            </p>
-            <Link href="/dashboard">
-              <Button size="lg" className="bg-[#FF6C37] hover:bg-[#FF6C37]/90 text-white px-8">
-                Start Your Free Trial
-                <ArrowRight className="ml-2" />
-              </Button>
-            </Link>
+        {/* CTA Section - Enhanced */}
+        <section className="container mx-auto px-6 py-20 md:py-32">
+          <div className="relative max-w-6xl mx-auto">
+            {/* Background Gradient Effects */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FF6C37]/10 via-transparent to-[#FF6C37]/10 rounded-[2rem] blur-3xl" />
+            
+            <div className="relative bg-background/50 backdrop-blur-sm border border-border/50 rounded-[2rem] overflow-hidden">
+              <div className="grid md:grid-cols-2 gap-12 p-12 md:p-16">
+                <div className="space-y-8">
+                  <h3 className="text-4xl md:text-5xl font-bold leading-tight">
+                    Ready to Transform Your Email
+                    <span className="block text-[#FF6C37]">Communication?</span>
+                  </h3>
+                  
+                  <div className="space-y-6">
+                    {[
+                      {
+                        icon: <Sparkles className="h-5 w-5" />,
+                        title: "Free Trial",
+                        description: "Start with our 14-day free trial, no credit card required"
+                      },
+                      {
+                        icon: <Users className="h-5 w-5" />,
+                        title: "5,000+ Teams",
+                        description: "Join thousands of successful businesses using NextInBox"
+                      },
+                      {
+                        icon: <BarChart className="h-5 w-5" />,
+                        title: "99.9% Uptime",
+                        description: "Enterprise-grade reliability you can count on"
+                      }
+                    ].map((feature) => (
+                      <div key={feature.title} className="flex items-start gap-3">
+                        <div className="p-2 rounded-lg bg-[#FF6C37]/10 text-[#FF6C37]">
+                          {feature.icon}
+                        </div>
+                        <div>
+                          <h4 className="font-semibold">{feature.title}</h4>
+                          <p className="text-sm text-muted-foreground">{feature.description}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Link href="/dashboard" className="flex-1">
+                      <Button size="lg" className="w-full bg-[#FF6C37] hover:bg-[#FF6C37]/90 text-white">
+                        Start Free Trial
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </Button>
+                    </Link>
+                    <Link href="/pricing" className="flex-1">
+                      <Button size="lg" variant="outline" className="w-full">
+                        View Pricing
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="hidden md:flex items-center justify-center relative">
+                  <div className="absolute inset-0 bg-[#FF6C37]/5 rounded-xl blur-2xl" />
+                  <div className="relative grid grid-cols-2 gap-4 p-4">
+                    {[...Array(4)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl p-4 hover:scale-105 transition-transform"
+                      >
+                        <div className="w-12 h-12 rounded-lg bg-[#FF6C37]/10 mb-3" />
+                        <div className="space-y-2">
+                          <div className="h-2 w-20 bg-border/50 rounded" />
+                          <div className="h-2 w-16 bg-border/50 rounded" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
+
       </main>
 
       {/* Footer - Minimalistic */}
