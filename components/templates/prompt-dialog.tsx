@@ -49,7 +49,7 @@ export function PromptDialog({ open, onOpenChange, onGenerated }: PromptDialogPr
         
         Requirements:
         - Use {{.field}} for dynamic content use proper fields names
-        - Use a modern and minimalistic design inspied by POSTMAN API documentation
+        - Use a modern and minimalistic design
         - Use internal styles for reusability and maintainability
         - Make it mobile-responsive
         - Include proper HTML email doctype and meta tags
