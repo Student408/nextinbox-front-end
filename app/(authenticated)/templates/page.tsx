@@ -98,15 +98,15 @@ export default function TemplatesPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-6 py-4 dark:bg-background dark:text-gray-100">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold flex items-center text-[#FF6C37]">
+      <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 dark:bg-background dark:text-gray-100">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold flex items-center text-[#FF6C37]">
             <FileTerminal className="mr-2" /> Email Templates
           </h2>
-          <Skeleton className="h-10 w-[140px]" />
+          <Skeleton className="h-10 w-full sm:w-[140px]" />
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((i) => (
             <Skeleton key={i} className="h-[200px] w-full" />
           ))}
@@ -116,20 +116,20 @@ export default function TemplatesPage() {
   }
 
   return (
-    <div className="container mx-auto px-6 py-4 dark:bg-background dark:text-gray-100">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold flex items-center text-[#FF6C37]">
+    <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 dark:bg-background dark:text-gray-100">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold flex items-center text-[#FF6C37]">
           <FileTerminal className="mr-2" /> Email Templates
         </h2>
         <Button
           onClick={handleAdd}
-          className="bg-[#FF6C37] hover:bg-[#FF5722] text-white font-semibold"
+          className="w-full sm:w-auto bg-[#FF6C37] hover:bg-[#FF5722] text-white font-semibold"
         >
           <Plus size={16} className="mr-2" /> Add New Template
         </Button>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {templates.map((template) => (
           <TemplateCard
             key={template.template_id}

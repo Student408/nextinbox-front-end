@@ -82,24 +82,24 @@ export function PromptDialog({ open, onOpenChange, onGenerated }: PromptDialogPr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[425px] w-[90%] p-4">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Wand2 className="w-5 h-5 text-[#FF6C37]" />
+          <DialogTitle className="flex items-center gap-2 text-lg">
+            <Wand2 className="w-4 h-4 text-[#FF6C37]" />
             Generate Email Template
           </DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-3 py-3">
           <div className="grid gap-2">
             <Label>Describe your email template</Label>
             <Textarea
-              placeholder="e.g., A welcome email for new users with a modern design, company logo, and a call-to-action button"
+              placeholder="e.g., A welcome email for new users..."
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              className="h-32"
+              className="h-24"
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div className="grid gap-2">
               <Label>Style</Label>
               <Input

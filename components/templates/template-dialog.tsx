@@ -12,6 +12,22 @@ import { Eye, Wand2 } from "lucide-react";
 import { PromptDialog } from "./prompt-dialog";
 import { PreviewDialog } from "./preview-dialog";
 
+const styles = `
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;     /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;            /* Chrome, Safari and Opera */
+  }
+`;
+
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement("style");
+  styleSheet.textContent = styles;
+  document.head.appendChild(styleSheet);
+}
+
 interface Template {
   template_id: string;
   name: string;
@@ -151,29 +167,29 @@ export function TemplateDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[90vw] w-[95vw] max-h-[90vh]">
-          <DialogHeader className="flex flex-col space-y-4">
-            <div className="flex items-center justify-between">
-              <DialogTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+        <DialogContent className="sm:max-w-[90vw] w-[95vw] h-[95vh] sm:h-[90vh] max-h-[95vh] sm:max-h-[90vh] overflow-hidden">
+          <DialogHeader className="flex flex-col space-y-4 relative">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-0">
+              <DialogTitle className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">
                 {template ? "Edit Email Template" : "Create Email Template"}
               </DialogTitle>
-              <div className="flex items-center gap-3 mr-10">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-3 sm:absolute sm:top-[10px] sm:right-[25px]">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setShowPromptDialog(true)}
-                  className="text-[#FF6C37] border-[#FF6C37]"
+                  className="text-[#FF6C37] border-[#FF6C37] text-xs sm:text-sm"
                 >
-                  <Wand2 className="w-4 h-4 mr-2" />
+                  <Wand2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Generate
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setShowPreviewDialog(true)}
-                  className="text-[#FF6C37] border-[#FF6C37]"
+                  className="text-[#FF6C37] border-[#FF6C37] text-xs sm:text-sm"
                 >
-                  <Eye className="w-4 h-4 mr-2" />
+                  <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Preview
                 </Button>
                 <Button
@@ -181,16 +197,16 @@ export function TemplateDialog({
                   size="sm"
                   onClick={handleSubmit}
                   disabled={isLoading}
-                  className="text-[#FF6C37] border-[#FF6C37]"
+                  className="text-[#FF6C37] border-[#FF6C37] text-xs sm:text-sm"
                 >
-                  {isLoading ? "Saving..." : template ? "Update Template" : "Save Template"}
+                  {isLoading ? "Saving..." : template ? "Update" : "Save"}
                 </Button>
               </div>
             </div>
           </DialogHeader>
-          <div className="flex flex-col lg:flex-row h-[calc(90vh-100px)]">
-            <div className="lg:w-[30%] p-4 overflow-y-auto">
-              <div className="space-y-4">
+          <div className="flex flex-col lg:flex-row h-[calc(95vh-130px)] sm:h-[calc(90vh-130px)]">
+            <div className="lg:w-[30%] p-2 sm:p-4 overflow-y-auto scrollbar-hide">
+              <div className="space-y-3 sm:space-y-4">
                 <div>
                   <Label htmlFor="name" className="text-gray-700 dark:text-gray-300">Template Name</Label>
                   <Input
@@ -263,9 +279,9 @@ export function TemplateDialog({
                 </div>
               </div>
             </div>
-            <div className="lg:w-[70%] h-full p-2 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
-              <div className="mb-4 px-2">
-                <Label htmlFor="content" className="text-gray-700 dark:text-gray-300 text-lg">
+            <div className="lg:w-[70%] h-[50vh] lg:h-full mt-4 lg:mt-0 p-2 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+              <div className="mb-2 sm:mb-4 px-2">
+                <Label htmlFor="content" className="text-gray-700 dark:text-gray-300 text-base sm:text-lg">
                   HTML & CSS Content
                 </Label>
               </div>
@@ -285,7 +301,7 @@ export function TemplateDialog({
                       autocompletion: true,
                       indentOnInput: true,
                     }}
-                    className="h-full"
+                    className="h-full text-sm sm:text-base"
                   />
                 </div>
               </div>
