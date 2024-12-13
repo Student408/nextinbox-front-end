@@ -87,17 +87,17 @@ export default function ServicesPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-6 py-4 dark:bg-background dark:text-gray-100">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold flex items-center text-[#FF6C37]">
+      <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 dark:bg-background dark:text-gray-100">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold flex items-center text-[#FF6C37]">
             <PlugZap className="mr-2" /> Email Services
           </h2>
-          <Skeleton className="h-10 w-[140px]" />
+          <Skeleton className="h-9 sm:h-10 w-full sm:w-[140px]" />
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-[200px] w-full" />
+            <Skeleton key={i} className="h-[180px] sm:h-[200px] w-full" />
           ))}
         </div>
       </div>
@@ -105,20 +105,20 @@ export default function ServicesPage() {
   }
 
   return (
-    <div className="container mx-auto px-6 py-4 dark:bg-background dark:text-gray-100">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold flex items-center text-[#FF6C37]">
+    <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 dark:bg-background dark:text-gray-100">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold flex items-center text-[#FF6C37]">
           <PlugZap className="mr-2" /> Email Services
         </h2>
         <Button
           onClick={handleAdd}
-          className="bg-[#FF6C37] hover:bg-[#FF5722] text-white font-semibold"
+          className="w-full sm:w-auto bg-[#FF6C37] hover:bg-[#FF5722] text-white font-semibold"
         >
           <Plus size={16} className="mr-2" /> Add New Service
         </Button>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((service) => (
           <ServiceCard
             key={service.service_id}
