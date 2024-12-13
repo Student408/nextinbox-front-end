@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { LayoutGrid } from 'lucide-react'
+import { Code } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -81,7 +81,7 @@ export default function AutomatePage() {
   return (
     <div className="container mx-auto px-4 py-4 md:px-6 md:py-6">
       <h2 className="text-2xl font-bold flex items-center text-[#FF6C37] mb-6">
-        <LayoutGrid className="mr-2" /> Code Generation
+        <Code className="mr-2" /> Code Generation
       </h2>
 
       <div className="grid gap-6">
