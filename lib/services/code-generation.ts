@@ -43,5 +43,10 @@ Requirements:
 Return only the implementation code without explanations or comments.`;
 
   const result = await model.generateContent(prompt);
-  return result.response.text();
+  const generatedCode = result.response.text();
+  
+  // Remove code fence markers for any language
+  const cleanedCode = generatedCode.replace(/^```.*\n|\n.*```\s*$/g, "").trim();
+  
+  return cleanedCode;
 }

@@ -51,7 +51,7 @@ export function PromptDialog({ open, onOpenChange, onGenerated }: PromptDialogPr
         - Use {{.filed}} for dynamic content
         - Use a modern design inspied by POSTMAN API documentation
         - Include a call-to-action button
-        - If button is included and it's requires a link, use {{.filed}}
+        - If button is included and it's requires a link for redirect, use {{.filed}} for dynamic link
         - Use internal styles for reusability and maintainability
         - Make it mobile-responsive
         - Include proper HTML email doctype and meta tags
