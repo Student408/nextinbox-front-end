@@ -30,10 +30,10 @@ export function PreviewDialog({ open, onOpenChange, content, name, subject, from
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[1200px] h-[90vh] p-0 gap-0 shadow-lg">
+      <DialogContent className="max-w-[95%] sm:max-w-[1200px] h-[95vh] max-h-[95vh] p-0 gap-0 shadow-lg">
         <div className="grid grid-cols-1 lg:grid-cols-[380px,1fr] h-full overflow-hidden">
           {/* Left Panel - Details */}
-          <div className="p-4 sm:p-8 border-b lg:border-b-0 lg:border-r bg-background overflow-y-auto max-h-[40vh] lg:max-h-full">
+          <div className="p-4 sm:p-8 border-b lg:border-b-0 lg:border-r bg-background overflow-y-auto scrollbar-hide h-[35vh] lg:h-full lg:max-h-full">
             <DialogHeader className="relative mb-4 lg:mb-8">
               <DialogTitle className="space-y-3">
                 <div className="flex items-center gap-3">
@@ -93,8 +93,8 @@ export function PreviewDialog({ open, onOpenChange, content, name, subject, from
           </div>
 
           {/* Right Panel - Preview */}
-          <div className="relative h-[50vh] lg:h-full bg-background">
-            <div className="h-full relative p-3 sm:p-6">
+          <div className="relative h-[63vh] lg:h-full bg-background overflow-hidden">
+            <div className="absolute inset-0 p-2 sm:p-6">
               {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm">
                   <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
@@ -103,16 +103,33 @@ export function PreviewDialog({ open, onOpenChange, content, name, subject, from
               <iframe
                 ref={iframeRef}
                 title="Email Preview"
-                className="w-full h-full bg-background rounded-xl shadow-sm transition-all duration-200"
+                className="w-full h-full bg-background rounded-xl shadow-sm transition-all duration-200 scrollbar-hide"
                 sandbox="allow-same-origin"
                 srcDoc={sanitizedContent}
                 onLoad={() => setIsLoading(false)}
-                style={{ opacity: isLoading ? 0 : 1 }}
+                style={{ 
+                  opacity: isLoading ? 0 : 1,
+                  height: '100%',
+                  width: '100%',
+                  border: 'none',
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none'
+                }}
               />
             </div>
           </div>
         </div>
       </DialogContent>
+
+      <style jsx global>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </Dialog>
   );
 }
