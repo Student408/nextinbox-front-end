@@ -61,14 +61,14 @@ export function DangerZone({ profile }: DangerZoneProps) {
 
   return (
     <>
-      <div className="space-y-6">
-        <div className="flex items-center gap-2 mb-6">
-          <AlertTriangle className="h-5 w-5 text-destructive" />
-          <h3 className="text-lg font-semibold text-destructive">Danger Zone</h3>
+      <div className="space-y-4 sm:space-y-6">
+        <div className="flex items-center gap-2 mb-4 sm:mb-6">
+          <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
+          <h3 className="text-base sm:text-lg font-semibold text-destructive">Danger Zone</h3>
         </div>
 
-        <div className="space-y-4">
-          <p className="text-sm text-muted-foreground">
+        <div className="space-y-3 sm:space-y-4">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Once you delete your account, there is no going back. Please be certain.
           </p>
 
@@ -76,6 +76,7 @@ export function DangerZone({ profile }: DangerZoneProps) {
             variant="destructive"
             onClick={() => setShowDeleteDialog(true)}
             disabled={loading}
+            className="w-full sm:w-auto"
           >
             Delete Account
           </Button>

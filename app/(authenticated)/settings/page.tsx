@@ -64,21 +64,21 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold flex items-center text-[#FF6C37] mb-6">
+    <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
+      <h2 className="text-xl sm:text-2xl font-bold flex items-center text-[#FF6C37] mb-4 sm:mb-6">
         <Settings className="mr-2" /> Settings
       </h2>
 
-      <div className="space-y-6">
-        <Card className="p-6">
+      <div className="space-y-4 sm:space-y-6">
+        <Card className="p-4 sm:p-6">
           <ProfileSettings profile={profile} onUpdate={fetchProfile} />
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-4 sm:p-6">
           <ApiKeySettings profile={profile} onUpdate={fetchProfile} />
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-4 sm:p-6">
           <DangerZone profile={profile} />
         </Card>
       </div>

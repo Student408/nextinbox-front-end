@@ -49,13 +49,13 @@ export function ProfileSettings({ profile, onUpdate }: ProfileSettingsProps) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-2 mb-6">
-        <User className="h-5 w-5 text-[#FF6C37]" />
-        <h3 className="text-lg font-semibold">Profile Information</h3>
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex items-center gap-2 mb-4 sm:mb-6">
+        <User className="h-4 w-4 sm:h-5 sm:w-5 text-[#FF6C37]" />
+        <h3 className="text-base sm:text-lg font-semibold">Profile Information</h3>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         <div>
           <Label htmlFor="email">Email</Label>
           <Input
@@ -79,7 +79,7 @@ export function ProfileSettings({ profile, onUpdate }: ProfileSettingsProps) {
         <Button
           onClick={updateProfile}
           disabled={loading}
-          className="bg-[#FF6C37] hover:bg-[#FF6C37]/90"
+          className="w-full sm:w-auto bg-[#FF6C37] hover:bg-[#FF6C37]/90"
         >
           {loading ? 'Updating...' : 'Update Profile'}
         </Button>
