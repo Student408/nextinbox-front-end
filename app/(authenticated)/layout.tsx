@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { ChevronLeft, ChevronRight, LayoutGrid, FileText, Workflow, Settings, FileTerminal, ContactRound, FileClock, LogOut, PlugZap, Search } from 'lucide-react';
+import { ChevronLeft, ChevronRight, LayoutGrid, FileText, Code, Settings, FileTerminal, ContactRound, FileClock, LogOut, PlugZap, Search } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { NotificationList } from "@/components/notifications/notification-list";
@@ -244,9 +244,9 @@ export default function AuthenticatedLayout({
                   label: "Templates",
                 },
                 {
-                  href: "/automate",
-                  icon: <Workflow className="w-5 h-5" />,
-                  label: "Automate",
+                  href: "/codegen",
+                  icon: <Code  className="w-5 h-5" />,
+                  label: "Code Gen",
                 },
                 {
                   href: "/contacts",

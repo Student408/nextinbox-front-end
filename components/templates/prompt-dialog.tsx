@@ -48,10 +48,8 @@ export function PromptDialog({ open, onOpenChange, onGenerated }: PromptDialogPr
         Tone: ${tone}
         
         Requirements:
-        - Use {{.filed}} for dynamic content
-        - Use a modern design inspied by POSTMAN API documentation
-        - Include a call-to-action button
-        - If button is included and it's requires a link for redirect, use {{.filed}} for dynamic link
+        - Use {{.field}} for dynamic content use proper fields names
+        - Use a modern and minimalistic design inspied by POSTMAN API documentation
         - Use internal styles for reusability and maintainability
         - Make it mobile-responsive
         - Include proper HTML email doctype and meta tags

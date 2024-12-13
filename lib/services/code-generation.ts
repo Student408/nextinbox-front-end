@@ -14,10 +14,9 @@ export async function generateCodeWithAI({
   );
   const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
-  const prompt = `Generate production-quality ${language} code for an email sending service that:
+  const prompt = `Generate production-quality ${language} code that makes a POST request to 'http://localhost:8080/send-emails':
 
-1. Makes a POST request to 'http://localhost:8080/send-emails'
-2. Uses this exact JSON structure:
+1. Uses this exact JSON structure:
 {
     "user_key": "instert_user_key_here",
     "service_id": "insert_service_id_here",
@@ -29,18 +28,22 @@ export async function generateCodeWithAI({
         }
     ],
     "parameters": {
-        ${fields.map((field) => `"${field}": "value"`).join(",\n      ")}
+        ${fields.map((field) => `"${field}": "get the value from the user"`).join(",\n      ")}
     }
 }
 
 Requirements:
-- Use modern ${language} syntax and best practices
-- Use fetch API with async/await
-- Include comprehensive error handling for network and API errors
-- Handle rate limiting and retries
-- Validate input parameters before sending the request
+- Use modern ${language} syntax and best practices:
+- For only one recipient:
+- Use given parameters names: ${fields.map((field) => `"${field}": "get the value from the user"`).join(",\n      ")}
+- Use fetch API with async/await:
+- Include comprehensive error handling for network and API errors:
+- Handle rate limiting and retries:
+- Validate input parameters before sending the request:
 
 Return only the implementation code without explanations or comments.`;
+
+  console.log('Generated prompt:', prompt); // Added logging
 
   const result = await model.generateContent(prompt);
   const generatedCode = result.response.text();
