@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { ChevronLeft, ChevronRight, LayoutGrid, FileText, Code, Settings, FileTerminal, ContactRound, FileClock, LogOut, PlugZap, Search } from 'lucide-react';
+import { ChevronLeft, ChevronRight, LayoutGrid, FileText, Code, Settings, FileTerminal, ContactRound, FileClock, LogOut, PlugZap, Search, Menu } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { NotificationList } from "@/components/notifications/notification-list";
@@ -21,12 +21,21 @@ const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME as string;
 
 const useSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
 
-  return { isCollapsed, toggleSidebar };
+  const toggleMobileMenu = () => {
+    setIsMobileOpen(!isMobileOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileOpen(false);
+  };
+
+  return { isCollapsed, toggleSidebar, isMobileOpen, toggleMobileMenu, closeMobileMenu };
 };
 
 export default function AuthenticatedLayout({
@@ -36,7 +45,7 @@ export default function AuthenticatedLayout({
 }) {
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
   const router = useRouter();
-  const { isCollapsed, toggleSidebar } = useSidebar();
+  const { isCollapsed, toggleSidebar, isMobileOpen, toggleMobileMenu, closeMobileMenu } = useSidebar();
   const [services, setServices] = useState<{ service_id: string; email_id: string }[]>([]);
   const [templates, setTemplates] = useState<{ template_id: string; name: string }[]>([]);
   const [selectedService, setSelectedService] = useState("");
@@ -199,11 +208,20 @@ export default function AuthenticatedLayout({
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
+      {/* Mobile Overlay */}
+      {isMobileOpen && (
+        <div
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 lg:hidden"
+          onClick={toggleMobileMenu}
+        />
+      )}
+
       {/* Sidebar */}
       <div
         className={cn(
-          "bg-card border-r transition-all duration-300 ease-in-out overflow-hidden shadow-md",
-          isCollapsed ? "w-16" : "w-64"
+          "fixed inset-y-0 z-50 bg-card border-r transition-all duration-300 ease-in-out overflow-hidden shadow-md lg:relative",
+          isCollapsed ? "lg:w-16" : "lg:w-64",
+          isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
         <div className="flex flex-col h-full">
@@ -213,6 +231,7 @@ export default function AuthenticatedLayout({
               <h2 className="text-xl font-bold text-[#FF6C37]">NextInBox</h2>
             )}
             <button
+              aria-label="Toggle sidebar"
               onClick={toggleSidebar}
               className="hover:bg-accent p-2 rounded-md transition text-muted-foreground hover:text-[#FF6C37]"
             >
@@ -272,6 +291,7 @@ export default function AuthenticatedLayout({
                 <li key={item.href}>
                   <Link
                     href={item.href}
+                    onClick={closeMobileMenu} // Add this line
                     className={cn(
                       "flex items-center group px-4 py-2 hover:bg-accent transition",
                       "hover:text-[#FF6C37]",
@@ -300,7 +320,11 @@ export default function AuthenticatedLayout({
           {/* Sidebar Footer */}
           <div className="border-t p-4">
             <button
-              onClick={handleSignOut}
+              title="Sign out"
+              onClick={() => {
+                closeMobileMenu();
+                handleSignOut();
+              }}
               className={cn(
                 "flex items-center w-full hover:bg-accent rounded-md p-2 transition",
                 "hover:text-[#FF6C37] text-muted-foreground",
@@ -318,9 +342,18 @@ export default function AuthenticatedLayout({
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
         <header className="bg-card border-b px-4 py-2 flex items-center justify-between shadow-sm h-16">
-          <div className="flex items-center w-full">
+          <div className="flex items-center w-full gap-4">
+            {/* Mobile Menu Button */}
+            <button
+              title="Toggle mobile menu"
+              onClick={toggleMobileMenu}
+              className="lg:hidden hover:bg-accent p-2 rounded-md transition text-muted-foreground hover:text-[#FF6C37]"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+
             {/* Search Bar */}
-            <div className="relative flex-grow max-w-xl mr-4">
+            <div className="relative flex-grow max-w-xl hidden sm:block">
               <input
                 type="text"
                 placeholder="Search..."
@@ -330,12 +363,12 @@ export default function AuthenticatedLayout({
             </div>
 
             {/* User and Notifications */}
-            <div className="flex items-center ml-auto space-x-4">
+            <div className="flex items-center ml-auto space-x-2 sm:space-x-4">
               <ThemeToggle />
               <NotificationList />
 
               <div className="flex items-center">
-                <span className="font-semibold text-foreground truncate max-w-xs">
+                <span className="font-semibold text-foreground truncate max-w-[100px] sm:max-w-xs">
                   {user.name}
                 </span>
               </div>
@@ -344,16 +377,18 @@ export default function AuthenticatedLayout({
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-auto p-4 bg-background">{children}</main>
+        <main className="flex-1 overflow-auto p-2 sm:p-4 bg-background">
+          {children}
+        </main>
 
         {/* Test Mail Button */}
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Card
-              className="border-2 border-gray-200 hover:border-[#FF6C37]/50 hover:shadow-lg transition-all duration-300 group dark:border-gray-700 dark:hover:border-[#FF6C37]/50 cursor-pointer rounded-full fixed bottom-8 right-8 w-16 h-16 flex items-center justify-center"
+              className="border-2 border-gray-200 hover:border-[#FF6C37]/50 hover:shadow-lg transition-all duration-300 group dark:border-gray-700 dark:hover:border-[#FF6C37]/50 cursor-pointer rounded-full fixed bottom-4 right-4 sm:bottom-8 sm:right-8 w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center"
               onClick={() => setIsDialogOpen(true)}
             >
-              <Mail className="text-[#FF6C37] w-8 h-8" />
+              <Mail className="text-[#FF6C37] w-6 h-6 sm:w-8 sm:h-8" />
             </Card>
           </DialogTrigger>
           <DialogContent className="animate-popup max-w-md mx-auto">
