@@ -94,7 +94,22 @@ body {
   }
 }
 
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-300px * 6 - 1.5rem * 6));
+  }
+}
 
+.animate-scroll {
+  animation: scroll 30s linear infinite;
+}
+
+.animate-scroll:hover {
+  animation-play-state: paused;
+}
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
