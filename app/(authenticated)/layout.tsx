@@ -167,7 +167,6 @@ export default function AuthenticatedLayout({
       }
 
       toast.success("Test mail sent successfully!");
-      setIsDialogOpen(false);
     } catch (error) {
       clearTimeout(timeoutId);
 
@@ -377,7 +376,7 @@ export default function AuthenticatedLayout({
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-auto p-2 sm:p-4 bg-background">
+        <main className="flex-1 overflow-auto p-2 sm:p-4 bg-background scrollbar-hide">
           {children}
         </main>
 
@@ -391,14 +390,14 @@ export default function AuthenticatedLayout({
               <Mail className="text-[#FF6C37] w-6 h-6 sm:w-8 sm:h-8" />
             </Card>
           </DialogTrigger>
-          <DialogContent className="animate-popup max-w-md mx-auto">
+          <DialogContent className="animate-popup max-w-[90%] sm:max-w-md mx-auto">
             <DialogHeader>
-              <DialogTitle className="text-2xl font-semibold">Send Test Mail</DialogTitle>
-              <DialogDescription className="text-sm text-muted-foreground">
+              <DialogTitle className="text-xl sm:text-2xl font-semibold">Send Test Mail</DialogTitle>
+              <DialogDescription className="text-xs sm:text-sm text-muted-foreground">
                 Send a test email to verify your service and template configuration.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4">
+            <div className="grid gap-3 sm:gap-4 py-3 sm:py-4">
               <Select onValueChange={setSelectedService}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select service" />
@@ -453,9 +452,10 @@ export default function AuthenticatedLayout({
               </div>
             )}
             <DialogFooter className="flex justify-end">
-              <Button onClick={handleTestMail} disabled={isLoading || !selectedService || !selectedTemplate || !testEmail} className="w-full sm:w-auto">
+              <Button onClick={handleTestMail} disabled={isLoading || !selectedService || !selectedTemplate || !testEmail} 
+                className="w-full text-sm sm:text-base">
                 {isLoading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
                 ) : null}
                 Send Test Mail
               </Button>
@@ -476,6 +476,15 @@ export default function AuthenticatedLayout({
             transform: scale(1);
             opacity: 1;
           }
+        }
+        
+        /* Hide scrollbar but maintain functionality */
+        :global(.scrollbar-hide) {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;     /* Firefox */
+        }
+        :global(.scrollbar-hide::-webkit-scrollbar) {
+          display: none;             /* Chrome, Safari and Opera */
         }
       `}</style>
     </div>
