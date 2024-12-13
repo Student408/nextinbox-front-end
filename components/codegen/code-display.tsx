@@ -40,7 +40,17 @@ export function CodeDisplay({ code }: CodeDisplayProps) {
         </Button>
       </CardHeader>
       <CardContent>
-        <div className="relative rounded-md overflow-hidden">
+        <style jsx>{`
+          .code-mirror-wrapper :global(.cm-scroller) {
+            overflow: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+          }
+          .code-mirror-wrapper :global(.cm-scroller::-webkit-scrollbar) {
+            display: none;
+          }
+        `}</style>
+        <div className="relative rounded-md overflow-hidden code-mirror-wrapper">
           <CodeMirror
             value={code}
             theme={vscodeDark}

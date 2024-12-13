@@ -79,20 +79,20 @@ export default function AutomatePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-4 md:px-6 md:py-6">
-      <h2 className="text-2xl font-bold flex items-center text-[#FF6C37] mb-6">
-        <Code className="mr-2" /> Code Generation
+    <div className="container mx-auto p-2 sm:px-4 sm:py-4 md:px-6 md:py-6">
+      <h2 className="text-xl sm:text-2xl font-bold flex items-center text-[#FF6C37] mb-4 sm:mb-6">
+        <Code className="mr-2 h-5 w-5 sm:h-6 sm:w-6" /> Code Generation
       </h2>
 
-      <div className="grid gap-6">
-        <Card className="w-full max-w-full md:max-w-5xl mx-auto">
-          <CardHeader>
-            <CardTitle>Generate API Code</CardTitle>
+      <div className="grid gap-4 sm:gap-6">
+        <Card className="w-full md:max-w-5xl md:mx-auto">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-lg sm:text-xl">Generate API Code</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
+            <div className="grid grid-cols-1 gap-3 sm:gap-4 lg:grid-cols-3">
               <Select value={selectedService} onValueChange={setSelectedService}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select service" />
                 </SelectTrigger>
                 <SelectContent>
@@ -105,7 +105,7 @@ export default function AutomatePage() {
               </Select>
 
               <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select template" />
                 </SelectTrigger>
                 <SelectContent>
@@ -118,7 +118,7 @@ export default function AutomatePage() {
               </Select>
 
               <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select language" />
                 </SelectTrigger>
                 <SelectContent>
@@ -134,7 +134,7 @@ export default function AutomatePage() {
             <Button 
               onClick={handleGenerateCode} 
               disabled={isLoading || !selectedService || !selectedTemplate || !selectedLanguage}
-              className="w-full bg-[#FF6C37] hover:bg-[#FF6C37]/90 transition-colors duration-200"
+              className="w-full mt-2 sm:mt-4 bg-[#FF6C37] hover:bg-[#FF6C37]/90 transition-colors duration-200 text-sm sm:text-base py-2 sm:py-3"
             >
               {isLoading ? 'Generating...' : 'Generate Code'}
             </Button>
@@ -142,7 +142,9 @@ export default function AutomatePage() {
         </Card>
 
         {generatedCode && (
-          <CodeDisplay code={generatedCode} />
+          <div className="w-full overflow-x-auto md:max-w-5xl md:mx-auto">
+            <CodeDisplay code={generatedCode} />
+          </div>
         )}
       </div>
     </div>
