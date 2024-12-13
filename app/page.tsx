@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { ArrowRight, Mail, Zap, Shield, Code, FileText, Braces, Check, ChevronRight, Copy, CheckCheck, Sparkles, Users, BarChart, MessageSquare, ShoppingBag, KeyRound, Mail as MailIcon } from 'lucide-react'
 
 export default function Home() {
@@ -9,15 +8,8 @@ export default function Home() {
       {/* Grid Pattern Background */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
 
-      {/* Announcement Banner */}
-      <div className="bg-[#FF6C37] py-1.5 text-center text-white relative z-10">
-        <p className="text-sm font-medium">
-          Introducing NextInBox - Professional Email Management Platform 🚀
-        </p>
-      </div>
-
       {/* Navigation - Simplified */}
-      <header className="container mx-auto px-6 py-4 flex justify-between items-center relative z-10">
+      <header className="container mx-auto px-6 py-6 flex justify-between items-center relative z-10">
         <div className="flex items-center space-x-2">
           <Mail className="h-8 w-8 text-[#FF6C37]" />
           <h1 className="text-2xl font-bold text-foreground">NextInBox</h1>
@@ -42,11 +34,11 @@ export default function Home() {
 
       {/* Hero Section - Redesigned */}
       <main className="flex-grow relative z-10">
-        <section className="container mx-auto px-6 py-24 md:py-28">
+        <section className="container mx-auto px-6 py-20 md:py-24">
           <div className="max-w-4xl mx-auto text-center space-y-6">
             <div className="inline-block animate-fade-in">
               <span className="px-3 py-1 text-sm font-medium bg-[#FF6C37]/10 text-[#FF6C37] rounded-full">
-                Now in public beta
+                Now in public alpha
               </span>
             </div>
             <h2 className="text-5xl md:text-7xl font-bold text-foreground tracking-tight">
@@ -226,17 +218,17 @@ print(f"Email sent: {response.message_id}")
           </div>
         </section>
 
-        {/* Template Preview Section - Enhanced */}
+        {/* Template Preview Section - Enhanced and Mobile Optimized */}
         <section className="container mx-auto px-6 py-20 md:py-32">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16 space-y-4">
-              <h3 className="text-4xl md:text-5xl font-bold">Professional Email Templates</h3>
+              <h3 className="text-3xl md:text-5xl font-bold">Professional Email Templates</h3>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Ready-to-use email templates for every business need. Customize and deploy in minutes.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               {[
                 {
                   title: 'Welcome Onboard',
@@ -265,8 +257,8 @@ print(f"Email sent: {response.message_id}")
               ].map((template) => (
                 <div key={template.title} 
                   className="group relative bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300">
-                  <div className="absolute top-4 right-4 flex items-center gap-2">
-                    <button className="p-2 rounded-lg bg-background/50 hover:bg-background backdrop-blur-sm border border-border/50 transition-colors">
+                  <div className="absolute top-4 right-4 flex items-center gap-2 flex-wrap">
+                    <button className="p-2 rounded-lg bg-background/50 hover:bg-background backdrop-blur-sm border border-border/50 transition-colors" title="Copy">
                       <Copy className="h-4 w-4 text-muted-foreground" />
                     </button>
                     <div className="p-2 rounded-lg bg-[#FF6C37]/10 text-[#FF6C37] text-sm font-medium">
@@ -274,7 +266,7 @@ print(f"Email sent: {response.message_id}")
                     </div>
                   </div>
                   
-                  <div className="p-6">
+                  <div className="p-6 pt-16">
                     <div className="flex items-start gap-4">
                       <div className="p-3 rounded-lg bg-[#FF6C37]/5 text-[#FF6C37]">
                         {template.icon}
@@ -322,16 +314,16 @@ print(f"Email sent: {response.message_id}")
           </div>
         </section>
 
-        {/* CTA Section - Enhanced */}
+        {/* CTA Section - Enhanced and Mobile Optimized */}
         <section className="container mx-auto px-6 py-20 md:py-32">
           <div className="relative max-w-6xl mx-auto">
             {/* Background Gradient Effects */}
             <div className="absolute inset-0 bg-gradient-to-r from-[#FF6C37]/10 via-transparent to-[#FF6C37]/10 rounded-[2rem] blur-3xl" />
             
             <div className="relative bg-background/50 backdrop-blur-sm border border-border/50 rounded-[2rem] overflow-hidden">
-              <div className="grid md:grid-cols-2 gap-12 p-12 md:p-16">
+              <div className="grid md:grid-cols-2 gap-12 p-8 md:p-16">
                 <div className="space-y-8">
-                  <h3 className="text-4xl md:text-5xl font-bold leading-tight">
+                  <h3 className="text-3xl md:text-5xl font-bold leading-tight">
                     Ready to Transform Your Email
                     <span className="block text-[#FF6C37]">Communication?</span>
                   </h3>
