@@ -95,10 +95,10 @@ export default function ContactsPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex items-center mb-6">
+      <div className="container mx-auto px-4 sm:px-6 py-4">
+        <div className="flex items-center mb-4 sm:mb-6">
           <ContactRound className="mr-2 text-[#FF6C37]" />
-          <h2 className="text-2xl font-bold text-[#FF6C37]">Contacts</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-[#FF6C37]">Contacts</h2>
         </div>
         <div className="space-y-4">
           <Skeleton className="h-[400px] w-full" />
@@ -108,15 +108,15 @@ export default function ContactsPage() {
   }
 
   return (
-    <div className="container mx-auto px-6 py-4">
-      <div className="flex items-center mb-6">
+    <div className="container mx-auto px-4 sm:px-6 py-4">
+      <div className="flex items-center mb-4 sm:mb-6">
         <ContactRound className="mr-2 text-[#FF6C37]" />
-        <h2 className="text-2xl font-bold text-[#FF6C37]">Contacts</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-[#FF6C37]">Contacts</h2>
       </div>
       
       {contacts.length === 0 ? (
-        <div className="text-center py-12 bg-muted/50 rounded-lg border-2 border-dashed">
-          <p className="text-muted-foreground">No contacts found</p>
+        <div className="text-center py-8 sm:py-12 bg-muted/50 rounded-lg border-2 border-dashed">
+          <p className="text-muted-foreground px-4">No contacts found</p>
         </div>
       ) : (
         <>
