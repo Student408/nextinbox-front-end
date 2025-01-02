@@ -75,7 +75,7 @@ export default function Home() {
                     <FeatureCard
                       icon={<Mail className="h-8 w-8" />}
                       title="Email Service Management"
-                      description="Configure multiple SMTP services, manage credentials, and monitor performance."
+                      description="Configure multiple SMTP services and manage credentials."
                     />
                   </div>
                   <div className="flex-shrink-0 w-[300px]">
